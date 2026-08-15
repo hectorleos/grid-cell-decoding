@@ -74,7 +74,7 @@ class DistanceCellModel(ParentNNClass):
 
     def _create_distance_cells(self):
         ''' Creates N_dc distance cell according to spatial resolution '''
-        return np.arange(0, self.N_dc * self.dc_res, self.dc_res)
+        return np.arange(0, self.N_dc * self.dc_res, self.dc_res) - (self.N_dc * self.dc_res / 2)  # Center the distance cells around 0
     
     def _compute_weight_matrix(self):
         ''' For each distance cell a, compute rate of cell j at scale i (i.e., r_ij) '''
@@ -111,11 +111,7 @@ class DistanceCellModel(ParentNNClass):
             2) multiplying it with the network weights
             3) applying E%-max algorithm & normalization step
         '''
-        # 0. Add offset to model if arena_width is set (to avoid negative positions)
-        if self.arena_width is not None:
-            a = np.array(a) + self.arena_width
-            b = np.array(b) + self.arena_width
-
+        
         # 1. Calculate spikes for all GCs in our network start & goal positions
         start_gc_activations = self._gc_spikes(a)
         goal_gc_activations = self._gc_spikes(b)
@@ -399,6 +395,7 @@ class NestedModel():
         return curr_diff_est
     
     def forward(self, a, b):
+
         # 1. Calculate spikes for all GCs in our network start & goal positions
         start_gc_x, start_gc_y = self._gc_spikes(a)
         goal_gc_x, goal_gc_y = self._gc_spikes(b)
