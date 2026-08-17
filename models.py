@@ -4,17 +4,19 @@ import matplotlib.pyplot as plt
 plt.style.use('bmh')
 
 # Global parameters across models
-N_MODULES = 10          # Number of GC modules (M)
+N_MODULES = 6           # Number of GC modules (M)
 N_GC_PER_MODULE = 20    # Number of GCs per module (m)
+SCALE_RATIO = 1.5       # Scale ratio 
+MIN_SCALE = 25          # Minimum grid scale (for geometric progression)
 R_MAX = 30              # Maximum GC firing rate (r_max)
 TIME_W = 0.1            # Time window in Poisson process (secs)
 
 class ParentNNClass():
 
-    def __init__(self, M = N_MODULES, s_M = 25, alpha = 1.4, m = N_GC_PER_MODULE, r_max = R_MAX, time_w = TIME_W, arena_width = None):
+    def __init__(self, M = N_MODULES, min_scale = MIN_SCALE, scale_ratio = SCALE_RATIO, m = N_GC_PER_MODULE, r_max = R_MAX, time_w = TIME_W, arena_width=None):
         self.M = M          # Number of GC modules
-        self.s_M = s_M      # Minimum grid scale (for geometric progression)
-        self.alpha = alpha  # Common factor (for geometric progression)
+        self.s_M = min_scale      # Minimum grid scale (for geometric progression)
+        self.scale_ratio = scale_ratio  # Common factor (for geometric progression)
         self.m = m          # Number of equally distributes spatial phases
         self.r_max = r_max  # Maximum GC firing rate (Hz)
         self.poiss_time_w = time_w # Time window in Poisson process (secs)
@@ -28,7 +30,7 @@ class ParentNNClass():
         ''' Creates M scales according to geometric progression '''
         scales = []
         for i in np.arange(self.M, 0, -1):
-            new_scale = round(self.s_M * (self.alpha ** (self.M-i)),2)
+            new_scale = round(self.s_M * (self.scale_ratio ** (self.M-i)),2)
             scales.append(new_scale)
         return scales
 
@@ -57,9 +59,11 @@ class ParentNNClass():
 class DistanceCellModel(ParentNNClass):
     
     # Call the parent class constructor to initialize the parameters
-    def __init__(self, N_dc = 12500, dc_res = 4, **kwargs):
+    def __init__(self, N_dc = 5000, dc_res = 0.04, **kwargs):
+        # Original params  N_dc = 12500, dc_res = 0.04
         super().__init__(**kwargs)  # Call the parent class constructor
         self.name = 'dcm'
+        self.long_name = 'Distance Cell Model'
         self.N_dc = N_dc        # Number of distance cells
         self.dc_res = dc_res    # Spatial resolution of distance cells (cm)
 
@@ -137,9 +141,11 @@ class DistanceCellModel(ParentNNClass):
   
 class VectorCellModel(ParentNNClass):
 
-    def __init__(self, N_fvc = 12500, N_cvc = 1250, **kwargs):
-        super().__init__(**kwargs)  # Call the parent class constructor
+    def __init__(self, N_fvc = 250, N_cvc = 25, **kwargs):
+        # Original params N_fvc = 12500, N_cvc = 1250
+        super().__init__(**kwargs)  
         self.name = 'vcm'
+        self.long_name = 'Vector Cell Model'
         self.N_fvc = N_fvc    # Number of "fine-grained" vector cells per array (x or y, pos or neg)
         self.N_cvc = N_cvc    # Number of "course-grained" vector cells per array (x or y, pos or neg)
 
@@ -156,6 +162,9 @@ class VectorCellModel(ParentNNClass):
 
     def _create_fine_vector_cells(self):
         ''' "Fine-grained" linearly spaced cells, not mentioned in paper. '''
+        if self.arena_width is None:
+            print('Error: arena_width must be given.')
+            exit(1)
         return np.linspace(0, self.arena_width, self.N_fvc)
 
     def _create_coarse_vector_cells(self):
@@ -257,26 +266,18 @@ class VectorCellModel(ParentNNClass):
 
         return np.array([x_decoded, y_decoded])
 
-class NestedModel():
+class NestedModel(ParentNNClass):
 
-    def __init__(self, M = N_MODULES, m = N_GC_PER_MODULE, arena_width = 50, r_max = R_MAX, time_w = TIME_W, scale_ratio=1.5, decoding_v = 1):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)  
         self.name = 'nm'
-        self.M = M          # Number of GC modules
-        self.m = m          # Number of equally distributed spatial phases
-        self.arena_width = arena_width  # Maximum arena width (cm)
-        self.r_max = r_max  # Maximum GC firing rate (Hz)
-        self.poiss_time_w = time_w # Time window in Poisson process (secs)
-        self.scale_ratio = scale_ratio   # s = lambda_i / lambda_{i+1}, paper's optimum ≈ 3/2
-        self.decoding_v = decoding_v
+        self.long_name = 'Nested Model'
+        self.decoding_v = 1
 
         # Initialize networks parameters
-        self.scales = self._create_scales()
+        self.scales = self._create_scales()[::-1]
         self.phases = self._create_phases()
 
-    def _create_scales(self):
-        ''' Creates M module scales as a geometric progression
-        '''
-        return self.arena_width / (self.scale_ratio ** np.arange(self.M))
 
     def _create_phases(self):
         ''' Creates m equally spaced phases for each scale'''
