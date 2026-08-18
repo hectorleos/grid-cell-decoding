@@ -32,7 +32,7 @@ def sample_square_position(square_width = 100, hexagonal_projection=True):
         y = np.random.uniform(-square_half_width, square_half_width)
     return [x, y]
 
-def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, convergence_threshold = 2.5, conv_n_prev = 5, distortion=None, a=0, b=0, hexagonal_projection= False, verbose=False):
+def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, convergence_threshold = 2.5, conv_n_prev = 5, hexagonal_projection= False, verbose=False):
     print('hexagonal_projection:',hexagonal_projection)
     x_histories = []
     y_histories = []
@@ -45,8 +45,8 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
         goal_x, goal_y = [0, 0] 
 
         # 2) Apply distortion if specified (returns same coords if distortion is None)
-        gc_start_x, gc_start_y = gc_distortion(start_x, start_y, distortion=distortion, a=a, b=b)
-        gc_goal_x, gc_goal_y = gc_distortion(goal_x, goal_y, distortion=distortion, a=a, b=b)
+      #  gc_start_x, gc_start_y = gc_distortion(start_x, start_y, distortion_params=distortion_params)
+      #  gc_goal_x, gc_goal_y = gc_distortion(goal_x, goal_y, distortion_params=distortion_params)
 
         # 3) Conduct navigation simulation until convergence
         x_history = [start_x]
@@ -56,7 +56,7 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
         while not converged:
 
             # Compute the population vector based on the current position and the goal
-            curr_pop_vec = model.forward(a=[gc_start_x, gc_start_y], b=[gc_goal_x, gc_goal_y])
+            curr_pop_vec = model.forward(start_pos=[start_x, start_y], targ_pos=[goal_x, goal_y])
             curr_pop_vec /= np.linalg.norm(curr_pop_vec) + 1e-10 # Normalize
 
             # Update position based on the population vector
@@ -68,7 +68,7 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
             y_history.append(start_y)
 
             # Update distorted cells (returns same coords if distortion is None)
-            gc_start_x, gc_start_y = gc_distortion(x_history[-1], y_history[-1], distortion=distortion, a=a, b=b)
+         #   gc_start_x, gc_start_y = gc_distortion(x_history[-1], y_history[-1], distortion_params=distortion_params)
 
             # Convergence happened if the distance moved in the last conv_n_prev steps is less than the convergence threshold
             if step_count > conv_n_prev:
@@ -92,20 +92,22 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
 
     # Directories
     distortion, a, b = distortion_params['distortion'], distortion_params['a'], distortion_params['b']
+    distortion_type = distortion_params['distortion'].split('-')[1]
     distortion_text = f'_{distortion}_a-{a}_b-{b}' if distortion is not None else '_undistorted'
-    simulation_data_file = Path(OUTPUT_DIR) / f'{model_name}_trials-{n_trials}{distortion_text}.pkl'
     os.makedirs(Path(OUTPUT_DIR), exist_ok=True)
+    os.makedirs(Path(OUTPUT_DIR) / Path(distortion_type), exist_ok=True)
+    simulation_data_file = Path(OUTPUT_DIR) / Path(distortion_type) / f'{model_name}_trials-{n_trials}{distortion_text}.pkl'
 
     # If  new simulation and save results
     if not os.path.exists(simulation_data_file):
 
         #Initialize corresponding model
         if model_name == 'dcm':
-            model = DistanceCellModel()
+            model = DistanceCellModel(distortion_params=distortion_params)
         elif model_name == 'vcm':
-            model = VectorCellModel(arena_width = arena_width)
+            model = VectorCellModel(distortion_params=distortion_params,arena_width = arena_width)
         elif model_name == 'nm':
-            model = NestedModel()
+            model = NestedModel(distortion_params=distortion_params)
         else:
             raise ValueError("Invalid model name")
 
@@ -117,7 +119,6 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
                                                          n_trials=n_trials,
                                                          step_size=step_size,
                                                          convergence_threshold=convergence_threshold,
-                                                         distortion=distortion, a=a, b=b,
                                                          hexagonal_projection=hexagonal_projection,
                                                          verbose=False)
 

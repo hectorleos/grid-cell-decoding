@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 plt.style.use('bmh')
 
 # Global parameters across models
-N_MODULES = 6           # Number of GC modules (M)
+N_MODULES = 10           # Number of GC modules (M)
 N_GC_PER_MODULE = 20    # Number of GCs per module (m)
 SCALE_RATIO = 1.5       # Scale ratio 
 MIN_SCALE = 25          # Minimum grid scale (for geometric progression)
@@ -13,14 +13,26 @@ TIME_W = 0.1            # Time window in Poisson process (secs)
 
 class ParentNNClass():
 
-    def __init__(self, M = N_MODULES, min_scale = MIN_SCALE, scale_ratio = SCALE_RATIO, m = N_GC_PER_MODULE, r_max = R_MAX, time_w = TIME_W, arena_width=None):
-        self.M = M          # Number of GC modules
-        self.s_M = min_scale      # Minimum grid scale (for geometric progression)
+    def __init__(self, M = N_MODULES, min_scale = MIN_SCALE, scale_ratio = SCALE_RATIO, m = N_GC_PER_MODULE, 
+                 r_max = R_MAX, time_w = TIME_W, arena_width=None, distortion_params=None):
+        # Grid cell parameters
+        self.M = M                      # Number of GC modules
+        self.s_M = min_scale            # Minimum grid scale (for geometric progression)
         self.scale_ratio = scale_ratio  # Common factor (for geometric progression)
         self.m = m          # Number of equally distributes spatial phases
         self.r_max = r_max  # Maximum GC firing rate (Hz)
         self.poiss_time_w = time_w # Time window in Poisson process (secs)
         self.arena_width = arena_width    # Maximum arena width (cm)
+
+        # Distortion parameters
+        if distortion_params is not None:
+            self.distortion_name = distortion_params['distortion'].split('-')[0]
+            self.distortion_type = distortion_params['distortion'] .split('-')[1]
+            self.a = distortion_params['a']
+            self.b = distortion_params['b']
+        else:
+            print('Error: Please provide distortion parameters (None if no distortion is desired).')
+            exit(1)
 
         # Initialize networks parameters
         self.scales = self._create_scales()
@@ -42,7 +54,37 @@ class ParentNNClass():
         ''' Calculates GC firing rate based on cosine tuned rate function '''
         num_bracket = (a - (s_i * (p_ij / (2 * np.pi)))) / s_i
         return self.r_max * (1 + np.cos(num_bracket * 2 * np.pi)) / 2
-    
+
+    def _sample_b(self):
+        if self.distortion_name == 'shear':
+            return np.random.uniform(0, self.b)
+        elif self.distortion_name == 'stretch':
+            return np.random.uniform(self.b, 1)
+
+
+    def _apply_distortion(self, X, Y, a, b):
+        if self.distortion_name == 'stretch':
+            dist_mat = np.array([[a, 0], [0, b]])
+            inv_dist_mat = np.linalg.inv(dist_mat)
+            X_new = inv_dist_mat[0,0]*X + inv_dist_mat[0,1]*Y
+            Y_new = inv_dist_mat[1,0]*X + inv_dist_mat[1,1]*Y
+        elif self.distortion_name == 'shear':
+            dist_mat = np.array([[1, a], [b, 1]])
+            inv_dist_mat = np.linalg.inv(dist_mat)
+            X_new = inv_dist_mat[0,0]*X + inv_dist_mat[0,1]*Y
+            Y_new = inv_dist_mat[1,0]*X + inv_dist_mat[1,1]*Y
+        elif self.distortion_name == 'symmetric':
+            X_new = X / (1 + a)
+            Y_new = Y / (1 + (a * X / (1 + a)))  
+        elif self.distortion_name == 'none' or self.distortion_name is None:
+            return X, Y
+        else:
+            # print error message if distortion type is not recognized
+            print(f"Warning: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
+            exit(1)
+        return X_new, Y_new
+
+
     def emax_N_normalize(self, x, epsilon=0.01):
         ''' Applies E%-max algorithm and normalzation steps '''
         # E%-max algorithm: silence all values below (1-epsilon) of the maximum value
@@ -92,16 +134,25 @@ class DistanceCellModel(ParentNNClass):
             all_weights.append(distance_weights)
         return np.array(all_weights)
     
-    def _gc_spikes(self, a):
-        ''' Given current 2D position a, calculate GC spikes for all GCs in our network along axes x and y
+    def _gc_spikes(self, curr_pos):
+        ''' Given current 2D position, calculate GC spikes for all GCs in our network along axes x and y
             Returns a 2D array of shape (2, M*m) = (axes, modules * phases) with the number of spikes for each GC
         '''
+
+        if self.distortion_type == 'global': # Apply same distortion to all cells
+            curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, self.b)
+        
         x_gc_spikes = []
         y_gc_spikes = []
         for s_i in self.scales:
             for p_i in self.phases:
-                r_ix = self._gc_rate(a[0], s_i, p_i) # FR at x-axis
-                r_iy = self._gc_rate(a[1], s_i, p_i) # FR at y-axis
+
+                if self.distortion_type == 'local': # Apply different distortion to each cell
+                    sampled_b = self._sample_b()  # In this case, we sample b according to self.b
+                    curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
+
+                r_ix = self._gc_rate(curr_pos[0], s_i, p_i) # FR at x-axis
+                r_iy = self._gc_rate(curr_pos[1], s_i, p_i) # FR at y-axis
                 spikes_ix = np.random.poisson(lam = self.poiss_time_w * r_ix)
                 spikes_iy = np.random.poisson(lam = self.poiss_time_w * r_iy)
                 #print(f"GC at phase {p_ij} with rate {np.round(r_ij)}: spikes: {spikes_ij}")
@@ -109,7 +160,7 @@ class DistanceCellModel(ParentNNClass):
                 y_gc_spikes.append(spikes_iy)
         return np.array([x_gc_spikes, y_gc_spikes])
 
-    def forward(self, a, b):
+    def forward(self, start_pos, targ_pos):
         ''' Given current 2D position a and target position b, apply forward pass by 
             1) calculating GC spikes
             2) multiplying it with the network weights
@@ -117,8 +168,8 @@ class DistanceCellModel(ParentNNClass):
         '''
         
         # 1. Calculate spikes for all GCs in our network start & goal positions
-        start_gc_activations = self._gc_spikes(a)
-        goal_gc_activations = self._gc_spikes(b)
+        start_gc_activations = self._gc_spikes(start_pos)
+        goal_gc_activations = self._gc_spikes(targ_pos)
 
         # 2. Compute forward passes
         start_xdc_activations = self.emax_N_normalize(self.W_dcs @ start_gc_activations[0])
@@ -201,34 +252,52 @@ class VectorCellModel(ParentNNClass):
             Wfvc_cvc[c, ind] = 1
         return Wfvc_cvc
 
-    def _gc_pair_spikes(self, a, b):
+    def _gc_pair_spikes(self, start_pos, targ_pos, dim):
         '''
-        Given 1-D start position a and goal position b, compute the multiplicative GC output for each scale along each axis.
+        Given 2-D start position and goal position, compute the multiplicative GC output for each scale along given axis (dim).
         Returns two arrays of shape (m, M) — the m phase-difference slots activated by the start x goal outer product, for each scale.
         '''
+
+        if self.distortion_type == 'global': # Apply same distortion to all cells
+            start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, self.b)
+            targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, self.b)
+
         multsyn_pos = np.zeros((self.m, self.M))  # positive direction
         multsyn_neg = np.zeros((self.m, self.M))  # negative direction
 
-        for i, s_i in enumerate(self.scales):
 
-            # Compute mean firing rates for each of the m GCs at start and goal, on each axis
-            # Using index k directly as phase proxy (equivalent to Eq S6)
-            start_rates = np.array([self._gc_rate(a, s_i, p) * self.poiss_time_w for p in self.phases])
-            goal_rates = np.array([self._gc_rate(b, s_i, p) * self.poiss_time_w for p in self.phases])
+        for i, s_i in enumerate(self.scales):
+            start_rates = []
+            goal_rates = []
+            for p in self.phases:
+
+                if self.distortion_type == 'local': # Apply different distortion to each cell
+                    sampled_b = self._sample_b() 
+                    start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, sampled_b)
+                    targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, sampled_b)
+                
+                # Compute mean firing rates for each of the m GCs at start and goal, on each axis
+                # Using index k directly as phase proxy (equivalent to Eq S6)
+                start_rates.append(self._gc_rate(start_pos[dim], s_i, p) * self.poiss_time_w)
+                goal_rates.append(self._gc_rate(targ_pos[dim], s_i, p) * self.poiss_time_w)
+            start_rates = np.array(start_rates)
+            goal_rates = np.array(goal_rates)
 
             # Sample Poisson spikes
             start_spikes = np.random.poisson(start_rates)  # shape (m,)
             goal_spikes  = np.random.poisson(goal_rates)
-    
+
             # Compute multiplicative synapse output via Grid_Vec_w
             # einsum: outer product (m, m) contracted with Grid_Vec_w (m, m, m) -> (m,)
             multsyn_pos[:, i] = np.einsum('ij,ijv->v', np.outer(start_spikes, goal_spikes), self.W_phasediff)
             multsyn_neg[:, i] = np.einsum('ij,ijv->v', np.outer(goal_spikes, start_spikes), self.W_phasediff)
 
         return multsyn_pos, multsyn_neg
+    
+
 
     
-    def forward(self, a, b):
+    def forward(self, start_pos, targ_pos):
         ''' Given current 2D position a and target position b, apply forward pass by 
             1) calculating GC spikes
             2) multiplying it with the network weights
@@ -236,8 +305,8 @@ class VectorCellModel(ParentNNClass):
         '''
 
         # 1. Calculate spikes for all GCs in our network start & goal positions
-        gc_x_pos, gc_x_neg = self._gc_pair_spikes(a[0], b[0])
-        gc_y_pos, gc_y_neg = self._gc_pair_spikes(a[1], b[1])
+        gc_x_pos, gc_x_neg = self._gc_pair_spikes(start_pos, targ_pos, dim=0)
+        gc_y_pos, gc_y_neg = self._gc_pair_spikes(start_pos, targ_pos, dim=1)
 
         # 2. Project onto "fine-grained" vector cells
         fvc_x_pos, fvc_x_neg = np.zeros(self.N_fvc), np.zeros(self.N_fvc)
@@ -294,9 +363,13 @@ class NestedModel(ParentNNClass):
         return self.r_max * np.exp(kappa * (np.cos(2 * np.pi * (a - c_j) / lambda_j) - 1))
 
     # --- Grid cell spiking function ---
-    def _gc_spikes(self, a):
+    def _gc_spikes(self, curr_pos):
         ''' Computes GC spikes following Poisson process
         '''
+
+        if self.distortion_type == 'global': # Apply same distortion to all cells
+            curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1])
+
         x_gc_spikes = []
         y_gc_spikes = []
         for lambda_i_idx, lambda_i in enumerate(self.scales):
@@ -304,8 +377,13 @@ class NestedModel(ParentNNClass):
             y_scale_gc_spikes = []
             scale_phases = self.phases[lambda_i_idx]
             for c_j in scale_phases:
-                r_jx = self._gc_rate(a[0], lambda_i, c_j) # FR at x-axis
-                r_jy = self._gc_rate(a[1], lambda_i, c_j) # FR at y-axis
+
+                if self.distortion_type == 'local': # Apply different distortion to each cell
+                        sampled_b = self._sample_b()
+                        curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
+                
+                r_jx = self._gc_rate(curr_pos[0], lambda_i, c_j) # FR at x-axis
+                r_jy = self._gc_rate(curr_pos[1], lambda_i, c_j) # FR at y-axis
                 spikes_jx = np.random.poisson(lam = self.poiss_time_w * r_jx)
                 spikes_jy = np.random.poisson(lam = self.poiss_time_w * r_jy)
                 x_scale_gc_spikes.append(spikes_jx)
@@ -395,12 +473,12 @@ class NestedModel(ParentNNClass):
 
         return curr_diff_est
     
-    def forward(self, a, b):
+    def forward(self, start_pos, targ_pos):
 
         # 1. Calculate spikes for all GCs in our network start & goal positions
-        start_gc_x, start_gc_y = self._gc_spikes(a)
-        goal_gc_x, goal_gc_y = self._gc_spikes(b)
-    
+        start_gc_x, start_gc_y = self._gc_spikes(start_pos)
+        goal_gc_x, goal_gc_y = self._gc_spikes(targ_pos)
+
         if self.decoding_v == 1:
  
             #2. Follow nested decoding method to obtain population vector
