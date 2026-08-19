@@ -190,7 +190,7 @@ def plot_error_bars(distortion, distortion_params, n_trials, target_location = [
     group_width = 0.8
     bar_width = group_width / n_conditions
     # Colormap grading from light (undistorted) to dark (highest intensity),
-    if distortion_type == 'local':
+    if distortion_type == 'local' or distortion_type =='modular':
         colors = plt.cm.Reds(np.linspace(0.5, 0.85, n_conditions))
     elif distortion_type == 'global':
         colors = plt.cm.plasma(np.linspace(0.15, 0.85, n_conditions))
@@ -222,7 +222,7 @@ def plot_error_bars(distortion, distortion_params, n_trials, target_location = [
     plt.xlabel('Model')
     plt.ylabel('Error')
     plt.title(f'Error bars for simulations with {distortion} perturbation (N={n_trials})')
-    plt.ylim(-0.5, np.max([5.0, np.mean(error_list) + 3 * np.max(all_se)]))  # Set y-limit to show all error bars
+   # plt.ylim(-0.5, np.max([5.0, np.mean(error_list) + 3 * np.max(all_se)]))  # Set y-limit to show all error bars
     # Legend maps color -> condition/intensity level, shown once (not per model)
 
 
@@ -233,6 +233,9 @@ def plot_error_bars(distortion, distortion_params, n_trials, target_location = [
             legend_title = r'$b \sim U(0,b_{max})$'
         elif distortion_name == 'stretch':
             legend_title = r'$b \sim U(b_{min},1)$'
+    elif distortion_type == 'modular':
+        if distortion_name == 'shear':
+            legend_title = r'$[b_1,...,b_M]$'
     else:
         legend_title = 'Distortion Intensity'
 
@@ -246,6 +249,8 @@ def plot_error_bars(distortion, distortion_params, n_trials, target_location = [
             new_cond = new_cond.replace('b', r'$b_{max}$') if 'b' in new_cond else new_cond
         elif distortion_type == 'local' and distortion_name == 'stretch':
             new_cond = new_cond.replace('b', r'$b_{min}$') if 'b' in new_cond else new_cond
+        elif distortion_type == 'modular' and distortion_name == 'shear':
+            new_cond = new_cond.replace('b', r'$b_M$') if 'b' in new_cond else new_cond
 
         conditions[conditions.index(cond)] = new_cond
 

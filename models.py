@@ -24,6 +24,10 @@ class ParentNNClass():
         self.poiss_time_w = time_w # Time window in Poisson process (secs)
         self.arena_width = arena_width    # Maximum arena width (cm)
 
+        # Network parameters
+        self.scales = self._create_scales()
+        self.phases = self._create_phases()
+
         # Distortion parameters
         if distortion_params is not None:
             self.distortion_name = distortion_params['distortion'].split('-')[0]
@@ -34,10 +38,7 @@ class ParentNNClass():
             print('Error: Please provide distortion parameters (None if no distortion is desired).')
             exit(1)
 
-        # Initialize networks parameters
-        self.scales = self._create_scales()
-        self.phases = self._create_phases()
-
+    # ----- Initialization functions -----
     def _create_scales(self):
         ''' Creates M scales according to geometric progression '''
         scales = []
@@ -49,20 +50,50 @@ class ParentNNClass():
     def _create_phases(self):
         ''' Creates m equally spaced phases from 0 to 2*pi in radians'''
         return np.linspace(0, 2 * np.pi, self.m, endpoint=False)
-    
+
+    # ----- Neuron activation functions -----
     def _gc_rate(self, a, s_i, p_ij):
         ''' Calculates GC firing rate based on cosine tuned rate function '''
         num_bracket = (a - (s_i * (p_ij / (2 * np.pi)))) / s_i
         return self.r_max * (1 + np.cos(num_bracket * 2 * np.pi)) / 2
 
-    def _sample_b(self):
+    def _emax_N_normalize(self, x, epsilon=0.01):
+        ''' Applies E%-max algorithm and normalzation steps '''
+        # E%-max algorithm: silence all values below (1-epsilon) of the maximum value
+        threshold = x.max() * (1 - epsilon)
+        dc_activations = np.where(x >= threshold, x, 0.0)
+
+        # Normalize so total activity is constant across simulations
+        total = dc_activations.sum()
+        if total > 0:
+            dc_activations = dc_activations / total
+        return dc_activations
+
+    # ----- Distortion functions -----
+    def _localdist_sample_b(self):
+        ''' Samples b_max or b_min for local distortion based on uniform distribution (local distortion) '''
         if self.distortion_name == 'shear':
             return np.random.uniform(0, self.b)
         elif self.distortion_name == 'stretch':
             return np.random.uniform(self.b, 1)
 
+    def _modulardist_get_bs(self):
+        ''' Obtaines M equally-spaced b values according to distortion type (modular distortion) '''
+        if self.distortion_name == 'shear':
+            modular_bs = np.linspace(0,self.b, self.M)
+        elif self.distortion_name == 'stretch':
+            modular_bs = np.linspace(self.b, 1, self.M)
+        else:
+            print(f"_modulardist_get_bs: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
+            exit(1)
+        # IMPORTANT: modules in nested modules are reversed, so this array must also be reversed in that case
+        modular_bs = modular_bs[::-1] if self.name == 'nm' else modular_bs
+
+        return modular_bs
+
 
     def _apply_distortion(self, X, Y, a, b):
+        ''' Applies parametric distortions following Edvarsen (2018)'''
         if self.distortion_name == 'stretch':
             dist_mat = np.array([[a, 0], [0, b]])
             inv_dist_mat = np.linalg.inv(dist_mat)
@@ -83,20 +114,6 @@ class ParentNNClass():
             print(f"Warning: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
             exit(1)
         return X_new, Y_new
-
-
-    def emax_N_normalize(self, x, epsilon=0.01):
-        ''' Applies E%-max algorithm and normalzation steps '''
-        # E%-max algorithm: silence all values below (1-epsilon) of the maximum value
-        threshold = x.max() * (1 - epsilon)
-        dc_activations = np.where(x >= threshold, x, 0.0)
-
-        # Normalize so total activity is constant across simulations
-        total = dc_activations.sum()
-        if total > 0:
-            dc_activations = dc_activations / total
-        return dc_activations
-
 
 class DistanceCellModel(ParentNNClass):
     
@@ -141,14 +158,19 @@ class DistanceCellModel(ParentNNClass):
 
         if self.distortion_type == 'global': # Apply same distortion to all cells
             curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, self.b)
+        elif self.distortion_type == 'modular': # Apply different distortion to each module
+            modules_bs = self._modulardist_get_bs()
         
         x_gc_spikes = []
         y_gc_spikes = []
-        for s_i in self.scales:
-            for p_i in self.phases:
+        for i, s_i in enumerate(self.scales):
+            if self.distortion_type == 'modular': 
+                module_b = modules_bs[i]
+                curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, module_b)
 
+            for p_i in self.phases:
                 if self.distortion_type == 'local': # Apply different distortion to each cell
-                    sampled_b = self._sample_b()  # In this case, we sample b according to self.b
+                    sampled_b = self._localdist_sample_b()  # In this case, we sample b according to self.b
                     curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
 
                 r_ix = self._gc_rate(curr_pos[0], s_i, p_i) # FR at x-axis
@@ -172,10 +194,10 @@ class DistanceCellModel(ParentNNClass):
         goal_gc_activations = self._gc_spikes(targ_pos)
 
         # 2. Compute forward passes
-        start_xdc_activations = self.emax_N_normalize(self.W_dcs @ start_gc_activations[0])
-        start_ydc_activations = self.emax_N_normalize(self.W_dcs @ start_gc_activations[1])
-        goal_xdc_activations = self.emax_N_normalize(self.W_dcs @ goal_gc_activations[0])
-        goal_ydc_activations = self.emax_N_normalize(self.W_dcs @ goal_gc_activations[1])
+        start_xdc_activations = self._emax_N_normalize(self.W_dcs @ start_gc_activations[0])
+        start_ydc_activations = self._emax_N_normalize(self.W_dcs @ start_gc_activations[1])
+        goal_xdc_activations = self._emax_N_normalize(self.W_dcs @ goal_gc_activations[0])
+        goal_ydc_activations = self._emax_N_normalize(self.W_dcs @ goal_gc_activations[1])
 
         # 3. Read-out cells
         x_read_out_one = self.W_neg_readout @ start_xdc_activations + self.W_pos_readout @ goal_xdc_activations
@@ -258,21 +280,27 @@ class VectorCellModel(ParentNNClass):
         Returns two arrays of shape (m, M) — the m phase-difference slots activated by the start x goal outer product, for each scale.
         '''
 
-        if self.distortion_type == 'global': # Apply same distortion to all cells
-            start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, self.b)
-            targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, self.b)
-
         multsyn_pos = np.zeros((self.m, self.M))  # positive direction
         multsyn_neg = np.zeros((self.m, self.M))  # negative direction
 
+        if self.distortion_type == 'global': # Apply same distortion to all cells
+            start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, self.b)
+            targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, self.b)
+        elif self.distortion_type == 'modular': # Apply different distortion to each module
+            modules_bs = self._modulardist_get_bs()
 
         for i, s_i in enumerate(self.scales):
             start_rates = []
             goal_rates = []
-            for p in self.phases:
 
+            if self.distortion_type == 'modular': # Apply different distortion to each module
+                module_b = modules_bs[i]
+                start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, module_b)
+                targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, module_b)
+
+            for p in self.phases:
                 if self.distortion_type == 'local': # Apply different distortion to each cell
-                    sampled_b = self._sample_b() 
+                    sampled_b = self._localdist_sample_b() 
                     start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, sampled_b)
                     targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, sampled_b)
                 
@@ -318,8 +346,8 @@ class VectorCellModel(ParentNNClass):
             fvc_y_neg += gc_y_neg[:, i] @ self.W_GCtoFVC[:, :, i] 
 
         #3. Contatenate, conduct E-max + normalization step, and split back
-        fvc_x = self.emax_N_normalize(np.concatenate([fvc_x_pos, fvc_x_neg]))
-        fvc_y = self.emax_N_normalize(np.concatenate([fvc_y_pos, fvc_y_neg]))
+        fvc_x = self._emax_N_normalize(np.concatenate([fvc_x_pos, fvc_x_neg]))
+        fvc_y = self._emax_N_normalize(np.concatenate([fvc_y_pos, fvc_y_neg]))
         fvc_x_pos, fvc_x_neg = fvc_x[:self.N_fvc], fvc_x[self.N_fvc:]
         fvc_y_pos, fvc_y_neg = fvc_y[:self.N_fvc], fvc_y[self.N_fvc:]
 
@@ -369,19 +397,23 @@ class NestedModel(ParentNNClass):
 
         if self.distortion_type == 'global': # Apply same distortion to all cells
             curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1])
-
+        elif self.distortion_type == 'modular': # Apply different distortion to each module
+            modules_bs = self._modulardist_get_bs()
+            
         x_gc_spikes = []
         y_gc_spikes = []
         for lambda_i_idx, lambda_i in enumerate(self.scales):
+            if self.distortion_type == 'modular': 
+                module_b = modules_bs[lambda_i_idx]
+                curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, module_b)
             x_scale_gc_spikes = []
             y_scale_gc_spikes = []
             scale_phases = self.phases[lambda_i_idx]
-            for c_j in scale_phases:
 
+            for c_j in scale_phases:
                 if self.distortion_type == 'local': # Apply different distortion to each cell
-                        sampled_b = self._sample_b()
-                        curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
-                
+                    sampled_b = self._localdist_sample_b()
+                    curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
                 r_jx = self._gc_rate(curr_pos[0], lambda_i, c_j) # FR at x-axis
                 r_jy = self._gc_rate(curr_pos[1], lambda_i, c_j) # FR at y-axis
                 spikes_jx = np.random.poisson(lam = self.poiss_time_w * r_jx)
@@ -640,8 +672,8 @@ class VectorCellModelPaperVersion(ParentNNClass):
        # yvc_neg_activations = self.Wneg @ gc_neg_activations[1]
 
 #        print('xvc_pos_activations:', xvc_pos_activations)
-        xvc_pos_activations_normd = self.emax_N_normalize(xvc_pos_activations)
-        yvc_pos_activations_normd = self.emax_N_normalize(yvc_pos_activations)
+        xvc_pos_activations_normd = self._emax_N_normalize(xvc_pos_activations)
+        yvc_pos_activations_normd = self._emax_N_normalize(yvc_pos_activations)
 #        print('normd xvc_pos_activations_normd:', xvc_pos_activations_normd)
         for nomd_idx, nomd in enumerate(xvc_pos_activations_normd):
             print(f'For nomd_idx={nomd_idx}, encoding={self.xvc_pos[nomd_idx]}, orgl activation={xvc_pos_activations[nomd_idx]}, normd activation={nomd}')
@@ -649,8 +681,8 @@ class VectorCellModelPaperVersion(ParentNNClass):
      #   print(f'X VC pos activations: {xvc_pos_activations}')
         for pos in xvc_pos_activations:
             print(f'Activation: {pos}, Index: {np.where(xvc_pos_activations == pos)[0][0]}, VC Position: {self.xvc_pos[np.where(xvc_pos_activations == pos)[0][0]]}')
-        xvc_activations = xvc_pos_activations_normd #self.emax_N_normalize(np.concatenate((xvc_pos_activations, xvc_neg_activations)))
-        yvc_activations = yvc_pos_activations_normd #self.emax_N_normalize(np.concatenate((yvc_pos_activations, yvc_neg_activations)))
+        xvc_activations = xvc_pos_activations_normd #self._emax_N_normalize(np.concatenate((xvc_pos_activations, xvc_neg_activations)))
+        yvc_activations = yvc_pos_activations_normd #self._emax_N_normalize(np.concatenate((yvc_pos_activations, yvc_neg_activations)))
 
         # 3. Decode translation vector
         x_read_out = self.xvc_pos @ xvc_activations

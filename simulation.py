@@ -75,7 +75,7 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
                 old_x = x_history[-conv_n_prev]
                 old_y = y_history[-conv_n_prev]
                 distance_moved = np.sqrt((start_x - old_x) ** 2 + (start_y - old_y) ** 2)
-                if distance_moved < convergence_threshold or step_count > 1000:
+                if distance_moved < convergence_threshold: # or step_count > 1000:
                     converged = True
 
                     if start_x > 3 and False: # DElete at some point pls
@@ -110,6 +110,7 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
             model = NestedModel(distortion_params=distortion_params)
         else:
             raise ValueError("Invalid model name")
+        print(model.scales)
 
         print('='*70)
         print(f'Running new simulation for {model.long_name} with distortion={distortion} (a={a}, b={b})...')
