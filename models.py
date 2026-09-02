@@ -4,10 +4,10 @@ import matplotlib.pyplot as plt
 plt.style.use('bmh')
 
 # Global parameters across models
-N_MODULES = 10           # Number of GC modules (M)
+N_MODULES = 10        # Number of GC modules (M)
 N_GC_PER_MODULE = 20    # Number of GCs per module (m)
 SCALE_RATIO = 1.5       # Scale ratio 
-MIN_SCALE = 25          # Minimum grid scale (for geometric progression)
+MIN_SCALE = 25        # Minimum grid scale (for geometric progression)
 R_MAX = 30              # Maximum GC firing rate (r_max)
 TIME_W = 0.1            # Time window in Poisson process (secs)
 
@@ -25,8 +25,8 @@ class ParentNNClass():
         self.arena_width = arena_width    # Maximum arena width (cm)
 
         # Network parameters
-        self.scales = self._create_scales()
-        self.phases = self._create_phases()
+     #   self.scales = self._create_scales(). delete
+     #   self.phases = self._create_phases(). delete
 
         # Distortion parameters
         if distortion_params is not None:
@@ -34,6 +34,15 @@ class ParentNNClass():
             self.distortion_type = distortion_params['distortion'] .split('-')[1]
             self.a = distortion_params['a']
             self.b = distortion_params['b']
+            self.b_drift = None
+            if '+' in self.distortion_name:
+                if 'b_drift' in distortion_params:
+                    self.distortion_name = self.distortion_name.split('+')[0]
+                    self.b_drift = distortion_params['b_drift']
+                    self.b_offset = 0
+                else:
+                    print('Error: Please provide b_drift parameter for distortion with drift.')
+                    exit(1)
         else:
             print('Error: Please provide distortion parameters (None if no distortion is desired).')
             exit(1)
@@ -78,21 +87,24 @@ class ParentNNClass():
             return np.random.uniform(self.b, 1)
 
     def _modulardist_get_bs(self):
-        ''' Obtaines M equally-spaced b values according to distortion type (modular distortion) '''
+        ''' Obtaines M values for b following geometric progression (modular distortion) '''
+        modular_bs = []
         if self.distortion_name == 'shear':
-            modular_bs = np.linspace(0,self.b, self.M)
+            for i in np.arange(self.M, 0, -1):
+                modular_bs.append(round(self.b / (self.scale_ratio ** (self.M-i)),2))
+            modular_bs = np.array(modular_bs)[::-1]
         elif self.distortion_name == 'stretch':
             modular_bs = np.linspace(self.b, 1, self.M)
+            exit(1) # Need to change this!!
         else:
             print(f"_modulardist_get_bs: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
             exit(1)
         # IMPORTANT: modules in nested modules are reversed, so this array must also be reversed in that case
         modular_bs = modular_bs[::-1] if self.name == 'nm' else modular_bs
-
         return modular_bs
 
 
-    def _apply_distortion(self, X, Y, a, b):
+    def _apply_distortion(self, X, Y, a, b, goal_drift=False):
         ''' Applies parametric distortions following Edvarsen (2018)'''
         if self.distortion_name == 'stretch':
             dist_mat = np.array([[a, 0], [0, b]])
@@ -108,17 +120,22 @@ class ParentNNClass():
             X_new = X / (1 + a)
             Y_new = Y / (1 + (a * X / (1 + a)))  
         elif self.distortion_name == 'none' or self.distortion_name is None:
-            return X, Y
+            X_new = X
+            Y_new = Y
         else:
             # print error message if distortion type is not recognized
             print(f"Warning: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
             exit(1)
+        if self.b_drift is not None and goal_drift: # b_drift is the same for x and y coords ONLY for goal
+          X_new = X_new + self.b_offset
+          Y_new = Y_new + self.b_offset
+
         return X_new, Y_new
 
 class DistanceCellModel(ParentNNClass):
     
     # Call the parent class constructor to initialize the parameters
-    def __init__(self, N_dc = 5000, dc_res = 0.04, **kwargs):
+    def __init__(self, N_dc = 20000, dc_res = 0.04, **kwargs):
         # Original params  N_dc = 12500, dc_res = 0.04
         super().__init__(**kwargs)  # Call the parent class constructor
         self.name = 'dcm'
@@ -151,13 +168,13 @@ class DistanceCellModel(ParentNNClass):
             all_weights.append(distance_weights)
         return np.array(all_weights)
     
-    def _gc_spikes(self, curr_pos):
+    def _gc_spikes(self, curr_pos, goal_drift):
         ''' Given current 2D position, calculate GC spikes for all GCs in our network along axes x and y
             Returns a 2D array of shape (2, M*m) = (axes, modules * phases) with the number of spikes for each GC
         '''
 
         if self.distortion_type == 'global': # Apply same distortion to all cells
-            curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, self.b)
+            curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, self.b, goal_drift=goal_drift)
         elif self.distortion_type == 'modular': # Apply different distortion to each module
             modules_bs = self._modulardist_get_bs()
         
@@ -190,8 +207,8 @@ class DistanceCellModel(ParentNNClass):
         '''
         
         # 1. Calculate spikes for all GCs in our network start & goal positions
-        start_gc_activations = self._gc_spikes(start_pos)
-        goal_gc_activations = self._gc_spikes(targ_pos)
+        start_gc_activations = self._gc_spikes(start_pos, goal_drift = False)
+        goal_gc_activations = self._gc_spikes(targ_pos, goal_drift = True)
 
         # 2. Compute forward passes
         start_xdc_activations = self._emax_N_normalize(self.W_dcs @ start_gc_activations[0])
@@ -214,7 +231,7 @@ class DistanceCellModel(ParentNNClass):
   
 class VectorCellModel(ParentNNClass):
 
-    def __init__(self, N_fvc = 250, N_cvc = 25, **kwargs):
+    def __init__(self, N_fvc = 12500, N_cvc = 1250, **kwargs):
         # Original params N_fvc = 12500, N_cvc = 1250
         super().__init__(**kwargs)  
         self.name = 'vcm'
@@ -284,8 +301,8 @@ class VectorCellModel(ParentNNClass):
         multsyn_neg = np.zeros((self.m, self.M))  # negative direction
 
         if self.distortion_type == 'global': # Apply same distortion to all cells
-            start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, self.b)
-            targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, self.b)
+            start_pos = self._apply_distortion(start_pos[0], start_pos[1], self.a, self.b, goal_drift = False)
+            targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, self.b, goal_drift = True)
         elif self.distortion_type == 'modular': # Apply different distortion to each module
             modules_bs = self._modulardist_get_bs()
 
@@ -391,12 +408,12 @@ class NestedModel(ParentNNClass):
         return self.r_max * np.exp(kappa * (np.cos(2 * np.pi * (a - c_j) / lambda_j) - 1))
 
     # --- Grid cell spiking function ---
-    def _gc_spikes(self, curr_pos):
+    def _gc_spikes(self, curr_pos, goal_drift = False):
         ''' Computes GC spikes following Poisson process
         '''
 
         if self.distortion_type == 'global': # Apply same distortion to all cells
-            curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1])
+            curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, self.b, goal_drift=goal_drift)
         elif self.distortion_type == 'modular': # Apply different distortion to each module
             modules_bs = self._modulardist_get_bs()
             
@@ -508,8 +525,8 @@ class NestedModel(ParentNNClass):
     def forward(self, start_pos, targ_pos):
 
         # 1. Calculate spikes for all GCs in our network start & goal positions
-        start_gc_x, start_gc_y = self._gc_spikes(start_pos)
-        goal_gc_x, goal_gc_y = self._gc_spikes(targ_pos)
+        start_gc_x, start_gc_y = self._gc_spikes(start_pos, goal_drift = False)
+        goal_gc_x, goal_gc_y = self._gc_spikes(targ_pos, goal_drift = True)
 
         if self.decoding_v == 1:
  

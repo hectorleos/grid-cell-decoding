@@ -6,97 +6,111 @@ import pickle
 from pathlib import Path
 import os
 from utils import *
+from utils import real_to_grid_projection
 from tqdm import tqdm
 
 
 from models import DistanceCellModel, VectorCellModel, NestedModel
-OUTPUT_DIR = 'simulation_outputs'
 
 # Utility functions for simulation
 
-def sample_square_position(square_width = 100, hexagonal_projection=True):
-    ''' Samples a random position within a square of given width. If hexagonal_projection is True, it 
-        ensures that the sampled position lies within a hexagon inscribed in the square.'''
-    square_half_width = square_width / 2
-    if hexagonal_projection:
-        while True:
-            # Purposefully sampling from beyond the arena dimensions to cover for the whole range after projection
-            x = np.random.uniform(-square_width, square_width)
-            y = np.random.uniform(-square_width, square_width)
-            hex_x, hex_y = project_onto_axis([x, y], 1), project_onto_axis([x, y], 2)
-            if hex_x >= -square_half_width and hex_x <= square_half_width and hex_y >= -square_half_width and hex_y <= square_half_width:
-                return [x, y]
-    else:
-        # Sample properly from within arena dimensions
-        x = np.random.uniform(-square_half_width, square_half_width)
-        y = np.random.uniform(-square_half_width, square_half_width)
-    return [x, y]
 
 def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, convergence_threshold = 2.5, conv_n_prev = 5, hexagonal_projection= False, verbose=False):
     print('hexagonal_projection:',hexagonal_projection)
+
+    # Get evenly spaced start positions in real space
+    border_offset = 0.05 * arena_width
+    square_half_width = (arena_width / 2)
+    offset_square_half_width = square_half_width - border_offset
+    xs = np.linspace(-offset_square_half_width, offset_square_half_width, int(np.sqrt(n_trials)))
+    ys = np.linspace(-offset_square_half_width, offset_square_half_width, int(np.sqrt(n_trials)))
+    XS, YS = np.meshgrid(xs, ys)
+    real_start_locs = np.array([XS.ravel(), YS.ravel()]).T.reshape(-1, 2)
+
+    # Get start positions in grid space
+    if hexagonal_projection:
+        print('Projecting evenly spaced start locations onto hexagonal grid axes...')
+        grid_start_locs = real_to_grid_projection(np.array([XS.ravel(), YS.ravel()]) , l1=1, l2=2).T  
+    
+    # For each trial...
     x_histories = []
     y_histories = []
-    # For each trial...
     for i in tqdm(range(n_trials), desc="Simulating trials"):
 
-        # 1) Sample a random start position and a goal position
- #       print(f"Trial {i+1}/{n_trials}")
-        start_x, start_y = sample_square_position(arena_width, hexagonal_projection=hexagonal_projection)
-        goal_x, goal_y = [0, 0] 
+        # 1) Get start and goal positions 
+        real_start_x, real_start_y = real_start_locs[i]
+        grid_start_x, grid_start_y = grid_start_locs[i] if hexagonal_projection else (real_start_x, real_start_y)
+        goal_x, goal_y = [0, 0] # Goal is the same in real and grid space
 
-        # 2) Apply distortion if specified (returns same coords if distortion is None)
-      #  gc_start_x, gc_start_y = gc_distortion(start_x, start_y, distortion_params=distortion_params)
-      #  gc_goal_x, gc_goal_y = gc_distortion(goal_x, goal_y, distortion_params=distortion_params)
+      # print('-----Starting position:', (real_start_x, real_start_y), 'Grid position:', (grid_start_x, grid_start_y), 'Goal position:', (goal_x, goal_y))
 
-        # 3) Conduct navigation simulation until convergence
-        x_history = [start_x]
-        y_history = [start_y]
+        # 2) Conduct navigation simulation until convergence
+        x_history = [real_start_x]
+        y_history = [real_start_y]
         converged = False
         step_count = 0
+        model.b_offset = 0
         while not converged:
 
             # Compute the population vector based on the current position and the goal
-            curr_pop_vec = model.forward(start_pos=[start_x, start_y], targ_pos=[goal_x, goal_y])
+            grid_start_x, grid_start_y = real_to_grid_projection([real_start_x, real_start_y]) if hexagonal_projection else (real_start_x, real_start_y)
+            curr_pop_vec = model.forward(start_pos=[grid_start_x, grid_start_y], targ_pos=[goal_x, goal_y])
+            curr_pop_vec = grid_to_real_projection(curr_pop_vec) if hexagonal_projection else curr_pop_vec
             curr_pop_vec /= np.linalg.norm(curr_pop_vec) + 1e-10 # Normalize
+          # print(step_count, 'Starting position:', (real_start_x, real_start_y), 'Grid position:', (grid_start_x, grid_start_y), 'Goal position:', (goal_x, goal_y))
 
             # Update position based on the population vector
-            start_x = x_history[-1] + (curr_pop_vec[0] * step_size)
-            start_y = y_history[-1] + (curr_pop_vec[1] * step_size)
+            real_start_x = x_history[-1] + (curr_pop_vec[0] * step_size)
+            real_start_y = y_history[-1] + (curr_pop_vec[1] * step_size)
+
+            # Check if we have exited the arena
+            x_exit = not (-square_half_width <= real_start_x <= square_half_width)
+            y_exit = not (-square_half_width <= real_start_y <= square_half_width)
+
+            # Cancel position update if we have exited the arena
+            real_start_x = x_history[-1] if x_exit else real_start_x
+            real_start_y = y_history[-1] if y_exit else real_start_y
+
+          #  print(f'x_exit: {x_exit}, y_exit: {y_exit}, start_x: {start_x:.3f}, start_y: {start_y:.3f}')
+
+            # Apply drift to the model's offset if required
+            if model.b_drift is not None:
+                model.b_offset += model.b_drift # dt = 1
+         
+         #   print('model.b_offset:',model.b_offset)
             if verbose:
-                print(f"Step {step_count}: Position ({start_x:.3f}, {start_y:.3f})")
-            x_history.append(start_x)
-            y_history.append(start_y)
+                print(f"Step {step_count}: Position ({real_start_x:.3f}, {real_start_y:.3f})")
+            x_history.append(real_start_x)
+            y_history.append(real_start_y)
 
             # Update distorted cells (returns same coords if distortion is None)
-         #   gc_start_x, gc_start_y = gc_distortion(x_history[-1], y_history[-1], distortion_params=distortion_params)
+           # gc_start_x, gc_start_y = gc_distortion(x_history[-1], y_history[-1], distortion_params=distortion_params)
 
             # Convergence happened if the distance moved in the last conv_n_prev steps is less than the convergence threshold
             if step_count > conv_n_prev:
-                old_x = x_history[-conv_n_prev]
-                old_y = y_history[-conv_n_prev]
-                distance_moved = np.sqrt((start_x - old_x) ** 2 + (start_y - old_y) ** 2)
+                real_old_x = x_history[-conv_n_prev]
+                real_old_y = y_history[-conv_n_prev]
+                distance_moved = np.sqrt((real_start_x - real_old_x) ** 2 + (real_start_y - real_old_y) ** 2)
                 if distance_moved < convergence_threshold: # or step_count > 1000:
                     converged = True
-
-                    if start_x > 3 and False: # DElete at some point pls
-                        print(f'------hmmm??? ({start_x},{start_y})')
-                        print('distance_moved < convergence_threshold', distance_moved < convergence_threshold)
-                        print('distance_moved:', distance_moved)
-                        print('step_count > 1000', step_count > 1000)
             step_count += 1
-        x_histories.append(x_history[:-conv_n_prev+1])
-        y_histories.append(y_history[:-conv_n_prev+1])
+        x_histories.append(x_history)
+        y_histories.append(y_history)
+        
     return x_histories, y_histories
 
-def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, convergence_threshold = 2.5, distortion_params = None, hexagonal_projection=False, save_plot=True):
+def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, convergence_threshold = 2.5, distortion_params = None, hexagonal_projection=False, n_sim_round=1, save_data=True):
 
     # Directories
+    output_dir = Path('simulation_outputs', f'round-{n_sim_round}')
     distortion, a, b = distortion_params['distortion'], distortion_params['a'], distortion_params['b']
-    distortion_type = distortion_params['distortion'].split('-')[1]
+    distortion_type = distortion.split('-')[1]
     distortion_text = f'_{distortion}_a-{a}_b-{b}' if distortion is not None else '_undistorted'
-    os.makedirs(Path(OUTPUT_DIR), exist_ok=True)
-    os.makedirs(Path(OUTPUT_DIR) / Path(distortion_type), exist_ok=True)
-    simulation_data_file = Path(OUTPUT_DIR) / Path(distortion_type) / f'{model_name}_trials-{n_trials}{distortion_text}.pkl'
+    if '+drift' in distortion:
+        distortion_text += f'_bdrift-{distortion_params["b_drift"]}'
+    os.makedirs(Path(output_dir), exist_ok=True)
+    os.makedirs(Path(output_dir) / Path(distortion_type), exist_ok=True)
+    simulation_data_file = Path(output_dir) / Path(distortion_type) / f'{model_name}_trials-{n_trials}{distortion_text}.pkl'
 
     # If  new simulation and save results
     if not os.path.exists(simulation_data_file):
@@ -105,7 +119,7 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
         if model_name == 'dcm':
             model = DistanceCellModel(distortion_params=distortion_params)
         elif model_name == 'vcm':
-            model = VectorCellModel(distortion_params=distortion_params,arena_width = arena_width)
+            model = VectorCellModel(distortion_params=distortion_params, arena_width = arena_width)
         elif model_name == 'nm':
             model = NestedModel(distortion_params=distortion_params)
         else:
@@ -123,7 +137,7 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
                                                          hexagonal_projection=hexagonal_projection,
                                                          verbose=False)
 
-        if save_plot:
+        if save_data:
             with open(simulation_data_file, 'wb') as f:
                 pickle.dump((x_histories, y_histories), f) 
                 print(f'Saved simulation data to {simulation_data_file}')
