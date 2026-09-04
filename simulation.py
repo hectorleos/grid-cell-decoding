@@ -15,9 +15,7 @@ from models import DistanceCellModel, VectorCellModel, NestedModel
 # Utility functions for simulation
 
 
-def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, convergence_threshold = 2.5, conv_n_prev = 5, hexagonal_projection= False, verbose=False):
-    print('hexagonal_projection:',hexagonal_projection)
-
+def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, convergence_threshold = 2.5, conv_n_prev = 5, hexagonal_projection= False, verbose=False, open_field=True):
     # Get evenly spaced start positions in real space
     border_offset = 0.05 * arena_width
     square_half_width = (arena_width / 2)
@@ -25,12 +23,11 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
     xs = np.linspace(-offset_square_half_width, offset_square_half_width, int(np.sqrt(n_trials)))
     ys = np.linspace(-offset_square_half_width, offset_square_half_width, int(np.sqrt(n_trials)))
     XS, YS = np.meshgrid(xs, ys)
-    real_start_locs = np.array([XS.ravel(), YS.ravel()]).T.reshape(-1, 2)
-
+    real_start_locs = np.array([XS.ravel(), YS.ravel()]).T.reshape(-1, 2) # Shape (n_trials, 2)
+    print('OPEN FIELD:', open_field)
     # Get start positions in grid space
     if hexagonal_projection:
-        print('Projecting evenly spaced start locations onto hexagonal grid axes...')
-        grid_start_locs = real_to_grid_projection(np.array([XS.ravel(), YS.ravel()]) , l1=1, l2=2).T  
+        grid_start_locs = real_to_grid_projection(np.array([XS.ravel(), YS.ravel()]) , l1=1, l2=2).T  # Shape (n_trials, 2)
     
     # For each trial...
     x_histories = []
@@ -55,21 +52,26 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
             # Compute the population vector based on the current position and the goal
             grid_start_x, grid_start_y = real_to_grid_projection([real_start_x, real_start_y]) if hexagonal_projection else (real_start_x, real_start_y)
             curr_pop_vec = model.forward(start_pos=[grid_start_x, grid_start_y], targ_pos=[goal_x, goal_y])
-            curr_pop_vec = grid_to_real_projection(curr_pop_vec) if hexagonal_projection else curr_pop_vec
-            curr_pop_vec /= np.linalg.norm(curr_pop_vec) + 1e-10 # Normalize
+
+            # Apply corresponding transformations
+            start_proj_diff = np.array([real_start_x, real_start_y]) - np.array([grid_start_x, grid_start_y])
+            curr_pop_vec -= start_proj_diff if hexagonal_projection else 0
+            curr_pop_vec /= np.linalg.norm(curr_pop_vec) + 1e-10 
+            
           # print(step_count, 'Starting position:', (real_start_x, real_start_y), 'Grid position:', (grid_start_x, grid_start_y), 'Goal position:', (goal_x, goal_y))
 
             # Update position based on the population vector
             real_start_x = x_history[-1] + (curr_pop_vec[0] * step_size)
             real_start_y = y_history[-1] + (curr_pop_vec[1] * step_size)
 
-            # Check if we have exited the arena
-            x_exit = not (-square_half_width <= real_start_x <= square_half_width)
-            y_exit = not (-square_half_width <= real_start_y <= square_half_width)
+            if not open_field:
+                # Check if we have exited the arena
+                x_exit = not (-square_half_width <= real_start_x <= square_half_width)
+                y_exit = not (-square_half_width <= real_start_y <= square_half_width)
 
-            # Cancel position update if we have exited the arena
-            real_start_x = x_history[-1] if x_exit else real_start_x
-            real_start_y = y_history[-1] if y_exit else real_start_y
+                # Cancel position update if we have exited the arena
+                real_start_x = x_history[-1] if x_exit else real_start_x
+                real_start_y = y_history[-1] if y_exit else real_start_y
 
           #  print(f'x_exit: {x_exit}, y_exit: {y_exit}, start_x: {start_x:.3f}, start_y: {start_y:.3f}')
 
@@ -124,11 +126,22 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
             model = NestedModel(distortion_params=distortion_params)
         else:
             raise ValueError("Invalid model name")
-        print(model.scales)
 
         print('='*70)
-        print(f'Running new simulation for {model.long_name} with distortion={distortion} (a={a}, b={b})...')
-        print(f'PARAMS: M={model.M}, min_scale={model.s_M}, scale_ratio={model.scale_ratio}, m={model.m}, r_max={model.r_max}, poiss_time_w={model.poiss_time_w}')
+        print(f'Running new simulation for ***{model.long_name}*** with distortion={distortion} (a={a}, b={b})...')
+        print('PARAMETERS:')
+        print(f'\tM={model.M}, min_scale={model.s_M}, scale_ratio={model.scale_ratio}, m={model.m}, r_max={model.r_max}, poiss_time_w={model.poiss_time_w}')
+        if model_name == 'dcm':
+            print(f'\tN_dc={model.N_dc} (DCM)')
+            print(f'\txdc_positions=[{model.xdc_positions[:3]},...,{model.xdc_positions[-3:]}] (DCM)')
+        elif model_name == 'vcm':
+            print(f'\tN_fvc={model.N_fvc} (VCM)')
+            print(f'\tcvc_pos=[{model.cvc_pos[:3]},...,{model.cvc_pos[-3:]}] (VCM)')
+            print(f'\tfvc_pos=[{model.fvc_pos[:3]},...,{model.fvc_pos[-3:]}] (VCM)')
+        print(f'\tScales={model.scales}')
+        print(f'\thexagonal_projection: {hexagonal_projection}')
+
+
         x_histories, y_histories = navigation_simulation(model, 
                                                          arena_width=arena_width, 
                                                          n_trials=n_trials,
@@ -141,11 +154,11 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
             with open(simulation_data_file, 'wb') as f:
                 pickle.dump((x_histories, y_histories), f) 
                 print(f'Saved simulation data to {simulation_data_file}')
-        print('='*70)
+        print('='*70,'\n')
 
     # Otherwise, load already simulated results
     else: 
-        print(f'Loading simulation data from {simulation_data_file}')
+    #    print(f'Loading simulation data from {simulation_data_file}')
         x_histories, y_histories = pickle.load(open(simulation_data_file, 'rb'))
     return [x_histories, y_histories]
 import argparse

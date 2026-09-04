@@ -1,0 +1,99 @@
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-1 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=shear-global (a=0, b=0)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/nm_trials-100_shear-global_a-0_b-0.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=shear-global (a=0, b=0)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/dcm_trials-100_shear-global_a-0_b-0.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=0)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/vcm_trials-100_shear-global_a-0_b-0.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-2 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=shear-global (a=0, b=1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/nm_trials-100_shear-global_a-0_b-1.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=shear-global (a=0, b=1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/dcm_trials-100_shear-global_a-0_b-1.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/vcm_trials-100_shear-global_a-0_b-1.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-3 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=shear-global (a=0, b=2)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/nm_trials-100_shear-global_a-0_b-2.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=shear-global (a=0, b=2)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+	hexagonal_projection: True
+Saved simulation data to simulation_outputs/round-7/global/dcm_trials-100_shear-global_a-0_b-2.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=2)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+	hexagonal_projection: True

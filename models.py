@@ -10,6 +10,9 @@ SCALE_RATIO = 1.5       # Scale ratio
 MIN_SCALE = 25        # Minimum grid scale (for geometric progression)
 R_MAX = 30              # Maximum GC firing rate (r_max)
 TIME_W = 0.1            # Time window in Poisson process (secs)
+N_DC = 12500    # Number of distance cells
+DC_RES = 0.04    # Spatial resolution of distance cells (cm)
+N_FVC = 12500    # Number of "fine-grained" vector cells per array (x or y, pos or neg)
 
 class ParentNNClass():
 
@@ -23,10 +26,6 @@ class ParentNNClass():
         self.r_max = r_max  # Maximum GC firing rate (Hz)
         self.poiss_time_w = time_w # Time window in Poisson process (secs)
         self.arena_width = arena_width    # Maximum arena width (cm)
-
-        # Network parameters
-     #   self.scales = self._create_scales(). delete
-     #   self.phases = self._create_phases(). delete
 
         # Distortion parameters
         if distortion_params is not None:
@@ -94,8 +93,9 @@ class ParentNNClass():
                 modular_bs.append(round(self.b / (self.scale_ratio ** (self.M-i)),2))
             modular_bs = np.array(modular_bs)[::-1]
         elif self.distortion_name == 'stretch':
-            modular_bs = np.linspace(self.b, 1, self.M)
-            exit(1) # Need to change this!!
+            for i in np.arange(self.M, 0, -1):
+                modular_bs.append(1 - round(self.b / (self.scale_ratio ** (self.M-i)),2))
+            modular_bs = np.array(modular_bs)[::-1]
         else:
             print(f"_modulardist_get_bs: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
             exit(1)
@@ -135,7 +135,7 @@ class ParentNNClass():
 class DistanceCellModel(ParentNNClass):
     
     # Call the parent class constructor to initialize the parameters
-    def __init__(self, N_dc = 20000, dc_res = 0.04, **kwargs):
+    def __init__(self, N_dc = N_DC, dc_res = DC_RES, **kwargs):
         # Original params  N_dc = 12500, dc_res = 0.04
         super().__init__(**kwargs)  # Call the parent class constructor
         self.name = 'dcm'
@@ -231,13 +231,14 @@ class DistanceCellModel(ParentNNClass):
   
 class VectorCellModel(ParentNNClass):
 
-    def __init__(self, N_fvc = 12500, N_cvc = 1250, **kwargs):
+    def __init__(self, N_fvc = N_FVC, N_cvc = N_FVC/10, **kwargs):
         # Original params N_fvc = 12500, N_cvc = 1250
         super().__init__(**kwargs)  
         self.name = 'vcm'
         self.long_name = 'Vector Cell Model'
         self.N_fvc = N_fvc    # Number of "fine-grained" vector cells per array (x or y, pos or neg)
         self.N_cvc = N_cvc    # Number of "course-grained" vector cells per array (x or y, pos or neg)
+        self.max_range = N_DC * DC_RES  # Maximum range of VCM for fair comparison
 
         # Initialize networks parameters
         self.scales = self._create_scales()
@@ -252,18 +253,18 @@ class VectorCellModel(ParentNNClass):
 
     def _create_fine_vector_cells(self):
         ''' "Fine-grained" linearly spaced cells, not mentioned in paper. '''
-        if self.arena_width is None:
-            print('Error: arena_width must be given.')
+        if self.max_range is None:
+            print('Error: max_range must be calculated to compare with DCM.')
             exit(1)
-        return np.linspace(0, self.arena_width, self.N_fvc)
+        return np.linspace(0, self.max_range, self.N_fvc)
 
     def _create_coarse_vector_cells(self):
         ''' Pseudo-exponential distribution of translation vectors encoded by vector cells. '''
         c_vcs = [0]
         for s_i in self.scales:
             segment = np.linspace(
-                s_i * (self.arena_width / (sum(self.scales) * 100)),
-                s_i * self.arena_width / sum(self.scales),
+                s_i * (self.max_range / (sum(self.scales) * 100)),
+                s_i * self.max_range / sum(self.scales),
                 round(self.N_cvc / len(self.scales))
             )
             c_vcs.extend(c_vcs[-1] + segment)

@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.colors as mcolors
 from matplotlib.lines import Line2D
 plt.style.use('bmh')
 import os
@@ -51,19 +52,25 @@ class GC_DistortionDELEEETE:
 
         return X_new, Y_new
 
-def gc_distortion(X, Y, distortion, a=None, b=None):
+def gc_distortion(X, Y, distortion, a=None, b=None, reverse_distortion=False):
     '''Applied distortion to X and Y coordinates.'''
     if distortion == 'stretch':
         dist_mat = np.array([[a, 0], [0, b]])
         inv_dist_mat = np.linalg.inv(dist_mat)
         X_new = inv_dist_mat[0,0]*X + inv_dist_mat[0,1]*Y
         Y_new = inv_dist_mat[1,0]*X + inv_dist_mat[1,1]*Y
+        if reverse_distortion:
+            X_new = dist_mat[0,0]*X + dist_mat[0,1]*Y
+            Y_new = dist_mat[1,0]*X + dist_mat[1,1]*Y
     elif distortion == 'shear':
         dist_mat = np.array([[1, a], [b, 1]])
         inv_dist_mat = np.linalg.inv(dist_mat)
         X_new = inv_dist_mat[0,0]*X + inv_dist_mat[0,1]*Y
         Y_new = inv_dist_mat[1,0]*X + inv_dist_mat[1,1]*Y
-    elif distortion == 'symmetric':
+        if reverse_distortion:
+            X_new = dist_mat[0,0]*X + dist_mat[0,1]*Y
+            Y_new = dist_mat[1,0]*X + dist_mat[1,1]*Y
+    elif distortion == 'symmetric':# we never use it
         X_new = X / (1 + a)
         Y_new = Y / (1 + (a * X / (1 + a)))  
     elif distortion is None or distortion == 'None':
@@ -155,7 +162,7 @@ def plot_error(x_histories, y_histories, target_location = [0,0], plot=False):
     print(f'Mean error: {mean:.2f}, Median error: {median:.2f}, Std error: {std:.2f}')
 
 
-def plot_trajectories(model_name, x_histories, y_histories, arena_width, hexagonal_projection=True, plt_to_return=None):
+def plot_trajectories(model_name, x_histories, y_histories, arena_width, plt_to_return=None):
 
     n_trials = len(x_histories)
     if plt_to_return is None:
@@ -165,33 +172,27 @@ def plot_trajectories(model_name, x_histories, y_histories, arena_width, hexagon
     else:
         my_plt = plt_to_return
 
-    # Project the trajectories onto the hexagonal axes
-    if False: #hexagonal_projection:
-        x_histories_proj = []
-        y_histories_proj = []
-        for trial in range(len(x_histories)):
-            pos_xy_mat = np.array([x_histories[trial], y_histories[trial]])
-            proj_X = project_onto_axis(pos_xy_mat, 1)
-            proj_Y = project_onto_axis(pos_xy_mat, 2)
-            x_histories_proj.append(proj_X)
-            y_histories_proj.append(proj_Y)
-        x_histories = x_histories_proj
-        y_histories = y_histories_proj
-
     success_count = 0
     for trial in range(n_trials):
         last_x = x_histories[trial][-1]
         last_y = y_histories[trial][-1]
-        success = np.sqrt(last_x**2 + last_y**2) <= 5
+        success = np.sqrt(last_x**2 + last_y**2) <= 15
      #   color = 'blue' if success else 'red'
 
 
       # Use reverse cmap so darker colors will appear first in the plot (i.e., earlier steps will be darker, later steps lighter)
-       # cmap = 'Reds_r' if success else 'Blues_r'
-        color = 'red' if success else 'blue'
+        color = 'crimson' if success else 'slategray'
+       
+        cmap_name = 'gist_heat_r' if success else 'bone_r'
+        # Use only second half of the colormap to avoid very light colors that are hard to see
+        cmap = plt.cm.get_cmap(cmap_name, 256)
+        cmap = mcolors.ListedColormap(cmap(np.linspace(0.2, 1.0, 128)))
+
         success_count += success
-        my_plt.scatter(x_histories[trial], y_histories[trial], s=1, color=color, alpha=0.8)
-        my_plt.scatter(x_histories[trial][-1], y_histories[trial][-1], color='black', s=1, marker='x')  
+        my_plt.scatter(x_histories[trial], y_histories[trial], s=1.3, cmap=cmap, c=range(len(x_histories[trial])), zorder=1)
+                       #color=color, alpha=0.8)
+        # Bring to the very front
+        my_plt.scatter(x_histories[trial][-1], y_histories[trial][-1], color='gold', s=1, zorder=5)
 
     my_plt.set_xlim(-arena_width/2, arena_width/2)
     my_plt.set_ylim(-arena_width/2, arena_width/2)
@@ -211,7 +212,7 @@ def plot_trajectories(model_name, x_histories, y_histories, arena_width, hexagon
         return my_plt
 #plot_trajectories(model_name, x_histories, y_histories, hexagonal_projection=True)
 
-def load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, convergence_threshold = 2.5, distortion_params = None, hexagonal_projection=False, n_sim_round=1, save_data=True):
+def load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, convergence_threshold = 2.5, distortion_params = None, n_sim_round=1, save_data=True):
 
     # Directories
     output_dir = Path('simulation_outputs', f'round-{n_sim_round}')
@@ -230,11 +231,23 @@ def load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, conver
         return None
     # Otherwise, load already simulated results
     else: 
-        print(f'Loading simulation data from {simulation_data_file}')
+      #  print(f'Loading simulation data from {simulation_data_file}')
         x_histories, y_histories = pickle.load(open(simulation_data_file, 'rb'))
     return [x_histories, y_histories]
 
-def plot_trajectories_all_models(distortion_params, model_names, arena_width, step_size, convergence_threshold, n_trials, hexagonal_projection, n_sim_round, save_fig=False):
+def condition_parameter_name(cond, distortion_name, distortion_type):
+    new_cond = cond
+    if '-' in cond:
+        new_cond = cond.replace('-', '=')
+    if distortion_type == 'local' and distortion_name == 'shear':
+        new_cond = new_cond.replace('b', 'b_{max}') if 'b' in new_cond else new_cond
+    elif distortion_type == 'local' and distortion_name == 'stretch':
+        new_cond = new_cond.replace('b', 'b_{min}') if 'b' in new_cond else new_cond
+    elif distortion_type == 'modular': #and distortion_name == 'shear':
+        new_cond = new_cond.replace('b', 'b_M') if 'b' in new_cond else new_cond
+    return new_cond
+
+def plot_trajectories_all_models(distortion_params, model_names, arena_width, step_size, convergence_threshold, n_trials, n_sim_round, save_fig=False):
     n_models = len(model_names)
     n_conds = len(distortion_params)
 
@@ -244,7 +257,11 @@ def plot_trajectories_all_models(distortion_params, model_names, arena_width, st
     for i, model_name in enumerate(model_names):
         for j, (cond_name, cond_params) in enumerate(distortion_params.items()):
             distortion, a, b = cond_params['distortion'], cond_params['a'], cond_params['b']  
-            distortion_text = fr'$a={a}, b={b}$'
+            distortion_name = distortion.split('-')[0]
+            distortion_type = distortion.split('-')[1]
+            b_name = condition_parameter_name('b', distortion_name, distortion_type)
+            b = round(1 - b,2) if distortion == 'stretch-modular' else b
+            distortion_text = fr'$a={a}, {b_name}={b}$'
             ax = axes[i, j] if n_models > 1 else axes[j]
             plt.sca(ax)  # Set current axis
             # Run simulation for the current model and condition
@@ -254,15 +271,14 @@ def plot_trajectories_all_models(distortion_params, model_names, arena_width, st
                                                             convergence_threshold=convergence_threshold,
                                                             n_trials=n_trials, 
                                                             distortion_params=distortion_params[cond_name],
-                                                            hexagonal_projection=hexagonal_projection,
                                                             n_sim_round=n_sim_round,
                                                             save_data=False)
-            ax = plot_trajectories(model_name, x_histories, y_histories, arena_width = arena_width, hexagonal_projection=hexagonal_projection, plt_to_return=ax)
+            ax = plot_trajectories(model_name, x_histories, y_histories, arena_width = arena_width, plt_to_return=ax)
 
             if j == 0:
-                ax.set_ylabel(LONG_NAMES[model_name])
+                ax.set_ylabel(LONG_NAMES[model_name], fontsize=18)
             if i == 0:
-                ax.set_title(distortion_text)
+                ax.set_title(distortion_text, fontsize=18)
 
     plt.tight_layout()
     plt.subplots_adjust(top=0.9)
@@ -283,40 +299,19 @@ def calculate_error(pred_location, target_location):
     ''' Error is defined as the Euclidean distance between the final location and the target location. '''
     return np.sqrt((pred_location[0] - target_location[0])**2 + (pred_location[1] - target_location[1])**2)
 
-def plot_error_bars(distortion, distortion_params, n_trials, target_location = [0,0], model_names = ['nm', 'dcm', 'vcm']):
+
+def plot_error_bars(distortion_params, model_names, n_trials, n_sim_round, target_location = [0,0]):
     # Direc
+    distortion = distortion_params[list(distortion_params.keys())[0]]['distortion']
     distortion_name = distortion.split('-')[0]
     distortion_type = distortion.split('-')[1]
-    output_dir = Path('simulation_outputs') / Path(distortion_type)
+    output_dir = Path(f'simulation_outputs') / Path(f'round-{n_sim_round}') / Path(distortion_type)
 
     # Create condition names based on the parameter values
     conditions = [f'b-{distortion_params[condition]["b"]}' for condition in distortion_params]
     if '+drift' in distortion:
         conditions = [f'b-{distortion_params[condition]["b"]}_bdrift-{distortion_params[condition]["b_drift"]}' for condition in distortion_params]
-    ''' OLD VERSION
-        # Calculate errors for each model x condition
-    errors = {}
-    for model_name in model_names:
-        errors[model_name] = {}
-        for curr_condition in conditions:
-            errors[model_name][curr_condition] = []
-            found_file = False
-            output_dir = Path('simulation_outputs') / Path('global') if 'None' in curr_condition else Path('simulation_outputs') / Path(distortion_type)
-            for f in os.listdir(output_dir):
-                case_condition = curr_condition in f and distortion_name in f
-                case_global_undistorted = curr_condition in f and 'none-global' in f
-                if f'{model_name}_trials-{n_trials}' in f and (case_condition or case_global_undistorted):
-                    found_file = True
-                    print('Reading file:', os.path.join(output_dir, f))
-                    x_histories, y_histories = pickle.load(open(os.path.join(output_dir, f), 'rb'))
-                    for x_history, y_history in zip(x_histories, y_histories):
-                        final_x, final_y = x_history[-1], y_history[-1]
-                        errors[model_name][curr_condition].append(calculate_error([final_x, final_y], target_location))
-            if not found_file:
-                print(f'ERROR: No file found for model={model_name}, condition={curr_condition}, trials={n_trials}.')
-                return None
-    
-    '''
+
     # Calculate errors for each model x condition
     errors = {}
     for model_name in model_names:
@@ -324,7 +319,7 @@ def plot_error_bars(distortion, distortion_params, n_trials, target_location = [
         for curr_condition in conditions:
             errors[model_name][curr_condition] = []
             found_file = False
-            output_dir = Path('simulation_outputs') / Path(distortion_type)
+            output_dir = Path('simulation_outputs') / Path(f'round-{n_sim_round}') / Path(distortion_type)
             for f in os.listdir(output_dir):
                 case_condition = curr_condition+'.pkl' in f and distortion_name in f
                 if f'{model_name}_trials-{n_trials}' in f and case_condition:
@@ -390,30 +385,18 @@ def plot_error_bars(distortion, distortion_params, n_trials, target_location = [
         elif distortion_name == 'stretch':
             legend_title = r'$b \sim U(b_{min},1)$'
     elif distortion_type == 'modular':
-        if distortion_name == 'shear':
-            legend_title = r'$[b_1,...,b_M]$'
+        legend_title = r'$[b_1,...,b_M]$'
     else:
-        legend_title = 'Distortion Intensity'
+        legend_title = ''
 
     for cond in conditions:
-        new_cond = cond
-        if '-' in cond:
-            new_cond = cond.replace('-', '=')
-        if new_cond == 'b=None':
-            new_cond = 'undistorted'
-        if distortion_type == 'local' and distortion_name == 'shear':
-            new_cond = new_cond.replace('b', r'$b_{max}$') if 'b' in new_cond else new_cond
-        elif distortion_type == 'local' and distortion_name == 'stretch':
-            new_cond = new_cond.replace('b', r'$b_{min}$') if 'b' in new_cond else new_cond
-        elif distortion_type == 'modular' and distortion_name == 'shear':
-            new_cond = new_cond.replace('b', r'$b_M$') if 'b' in new_cond else new_cond
 
-        conditions[conditions.index(cond)] = new_cond
+        conditions[conditions.index(cond)] = condition_parameter_name(cond, distortion_name, distortion_type)
 
 
     legend_elements = [
         Line2D([0], [0], marker='o', color='black', markerfacecolor=colors[i],
-               markeredgecolor='black', markersize=8, label=conditions[i])
+               markeredgecolor='black', markersize=8, label=rf'${conditions[i]}$')
         for i in range(n_conditions)
     ]
     plt.legend(handles=legend_elements, loc='upper right', title=legend_title, fontsize=10, title_fontsize=11)
