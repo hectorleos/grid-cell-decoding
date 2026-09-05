@@ -26,7 +26,7 @@ example_distortion_params = {'undistorted-0': {'distortion': 'none-global', 'a':
                      'stretch1': {'distortion': 'stretch', 'a': 1, 'b': 0.67}}
 
 # Global distortion parameters
-shear_drift_global_params = get_param_dict({'a': [0], 'b': [0, 0.3, 0.6, 1, 2, 5], 'b_drift': [0.1]}, 
+shear_drift_global_params = get_param_dict({'a': [0], 'b': [0, 1, 2, 5, 10], 'b_drift': [0.1]}, 
                                      'shear+drift-global', incl_undistorted=False)
 
 shear_global_params = get_param_dict({'a': [0], 'b': [0, 1, 2, 5, 10]}, 

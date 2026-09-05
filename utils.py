@@ -245,6 +245,8 @@ def condition_parameter_name(cond, distortion_name, distortion_type):
         new_cond = new_cond.replace('b', 'b_{min}') if 'b' in new_cond else new_cond
     elif distortion_type == 'modular': #and distortion_name == 'shear':
         new_cond = new_cond.replace('b', 'b_M') if 'b' in new_cond else new_cond
+    elif 'drift' in distortion_name:
+        new_cond = new_cond.split("_bdrift")[0]
     return new_cond
 
 def plot_trajectories_all_models(distortion_params, model_names, arena_width, step_size, convergence_threshold, n_trials, n_sim_round, save_fig=False):
@@ -339,11 +341,8 @@ def plot_error_bars(distortion_params, model_names, n_trials, n_sim_round, targe
     n_conditions = len(conditions)
     group_width = 0.8
     bar_width = group_width / n_conditions
-    # Colormap grading from light (undistorted) to dark (highest intensity),
-    if distortion_type == 'local' or distortion_type =='modular':
-        colors = plt.cm.Reds(np.linspace(0.5, 0.85, n_conditions))
-    elif distortion_type == 'global':
-        colors = plt.cm.plasma(np.linspace(0.15, 0.85, n_conditions))
+    colors = plt.cm.Reds(np.linspace(0.5, 0.85, n_conditions))
+
 
     plt.figure(figsize=(2.5 * n_models + 2, 6))
     all_se = []
@@ -368,7 +367,10 @@ def plot_error_bars(distortion_params, model_names, n_trials, n_sim_round, targe
             jitter = np.random.uniform(-bar_width * 0.3, bar_width * 0.3, size=len(error_list))
             plt.scatter(x_pos + jitter, error_list, alpha=0.4, color=color, s=18, zorder=2)
 
-    plt.hlines(y=0, color='gray', xmin=-0.5, xmax=n_models - 0.5, zorder=1)
+    #plt.hlines(y=0, color='gray', xmin=-0.5, xmax=n_models - 0.5, zorder=1)
+
+    plt.yscale('log')
+
     plt.xticks(range(n_models), model_names)
     plt.xlabel('Model')
     plt.ylabel('Error')
@@ -386,6 +388,9 @@ def plot_error_bars(distortion_params, model_names, n_trials, n_sim_round, targe
             legend_title = r'$b \sim U(b_{min},1)$'
     elif distortion_type == 'modular':
         legend_title = r'$[b_1,...,b_M]$'
+    elif 'drift' in distortion_name:
+        b_drift_val = conditions[0].split("_bdrift-")[-1]
+        legend_title = fr'$b_{{drift}}={b_drift_val}$'
     else:
         legend_title = ''
 
@@ -399,7 +404,7 @@ def plot_error_bars(distortion_params, model_names, n_trials, n_sim_round, targe
                markeredgecolor='black', markersize=8, label=rf'${conditions[i]}$')
         for i in range(n_conditions)
     ]
-    plt.legend(handles=legend_elements, loc='upper right', title=legend_title, fontsize=10, title_fontsize=11)
+    plt.legend(handles=legend_elements, loc='lower right', title=legend_title, fontsize=10, title_fontsize=11)
 
     plt.tight_layout()
     plt.show()
