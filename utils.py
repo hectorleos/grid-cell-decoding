@@ -81,7 +81,7 @@ def gc_distortion(X, Y, distortion, a=None, b=None, reverse_distortion=False):
 
 def grid_to_real_projection(pos_xy_mat, l1=1, l2=2):
     """ 
-    Project matrix of 2D positions onto one of three axes (l = 1, 2, 3) that are 60 degrees apart.
+    Inverse of the two-axis projection in real_to_grid_projection
     """
     phi_l1 = -(np.pi/6) + l1 * (np.pi/3)  
     phi_l2 = -(np.pi/6) + l2 * (np.pi/3)
@@ -89,32 +89,21 @@ def grid_to_real_projection(pos_xy_mat, l1=1, l2=2):
     kl1 = np.array([np.cos(phi_l1), np.sin(phi_l1)])
     kl2 = np.array([np.cos(phi_l2), np.sin(phi_l2)])
     A = np.array([kl1, kl2])  # (2, 2)
+    A = np.linalg.inv(A)
     pos_xy_mat = np.array(pos_xy_mat)
     return A @ pos_xy_mat
 
 def real_to_grid_projection(proj_xy_mat, l1=1, l2=2):
     """
-    Inverse of the two-axis projection:
-    Given coordinates (s1, s2) where s1 = k_l1 @ pos and s2 = k_l2 @ pos,
-    recover the original 2D position pos.
-    
-    proj_xy_mat: (2, N) array where row 0 = projections on axis l1, row 1 = projections on axis l2
+    Project matrix of 2D positions onto one of three axes (l = 1, 2, 3) that are 60 degrees apart.
     """
     phi_l1 = -(np.pi/6) + l1 * (np.pi/3)
     phi_l2 = -(np.pi/6) + l2 * (np.pi/3)
-    
     kl1 = np.array([np.cos(phi_l1), np.sin(phi_l1)])
     kl2 = np.array([np.cos(phi_l2), np.sin(phi_l2)])
-    
-    # The forward projection is: A @ pos = [s1, s2]
-    # where A = [kl1; kl2]
     A = np.array([kl1, kl2])  # (2, 2)
-    
-    # Inverse: pos = A^{-1} @ [s1, s2]
-    A_inv = np.linalg.inv(A)
-    
     proj_xy_mat = np.array(proj_xy_mat)  # (2, N)
-    return A_inv @ proj_xy_mat  # (2, N)
+    return A @ proj_xy_mat  # (2, N)
 
 def sample_square_position(square_width = 100, hexagonal_projection=True):
     # FOR NOW WE'RE IGNORING THIS FUNCION
@@ -239,13 +228,17 @@ def condition_parameter_name(cond, distortion_name, distortion_type):
     new_cond = cond
     if '-' in cond:
         new_cond = cond.replace('-', '=')
+
     if distortion_type == 'local' and distortion_name == 'shear':
-        new_cond = new_cond.replace('b', 'b_{max}') if 'b' in new_cond else new_cond
+        new_cond = new_cond.replace('b', '\\beta_{max}') if 'b' in new_cond else new_cond
     elif distortion_type == 'local' and distortion_name == 'stretch':
-        new_cond = new_cond.replace('b', 'b_{min}') if 'b' in new_cond else new_cond
+        new_cond = new_cond.replace('b', '\\beta_{min}') if 'b' in new_cond else new_cond
     elif distortion_type == 'modular': #and distortion_name == 'shear':
-        new_cond = new_cond.replace('b', 'b_M') if 'b' in new_cond else new_cond
-    elif 'drift' in distortion_name:
+        new_cond = new_cond.replace('b', '\\beta_M') if 'b' in new_cond else new_cond
+    elif distortion_type == 'global':
+        new_cond = new_cond.replace('b', '\\beta') if 'b' in new_cond else new_cond
+
+    if 'drift' in distortion_name:
         new_cond = new_cond.split("_bdrift")[0]
     return new_cond
 
@@ -263,7 +256,7 @@ def plot_trajectories_all_models(distortion_params, model_names, arena_width, st
             distortion_type = distortion.split('-')[1]
             b_name = condition_parameter_name('b', distortion_name, distortion_type)
             b = round(1 - b,2) if distortion == 'stretch-modular' else b
-            distortion_text = fr'$a={a}, {b_name}={b}$'
+            distortion_text = fr'$\alpha={a}, {b_name}={b}$'
             ax = axes[i, j] if n_models > 1 else axes[j]
             plt.sca(ax)  # Set current axis
             # Run simulation for the current model and condition
@@ -383,20 +376,21 @@ def plot_error_bars(distortion_params, model_names, n_trials, n_sim_round, targe
 
     if distortion_type == 'local':
         if distortion_name == 'shear':
-            legend_title = r'$b \sim U(0,b_{max})$'
+            legend_title = r'$\beta \sim U(0,\beta_{max})$'
         elif distortion_name == 'stretch':
-            legend_title = r'$b \sim U(b_{min},1)$'
+            legend_title = r'$\beta \sim U(\beta_{min},1)$'
     elif distortion_type == 'modular':
-        legend_title = r'$[b_1,...,b_M]$'
+        legend_title = r'$[\beta_1,...,\beta_M]$'
     elif 'drift' in distortion_name:
         b_drift_val = conditions[0].split("_bdrift-")[-1]
-        legend_title = fr'$b_{{drift}}={b_drift_val}$'
+        legend_title = fr'$\beta_{{drift}}={b_drift_val}$'
     else:
         legend_title = ''
-
+    print('conditions before', conditions)
     for cond in conditions:
 
         conditions[conditions.index(cond)] = condition_parameter_name(cond, distortion_name, distortion_type)
+    print('conditions after', conditions)
 
 
     legend_elements = [

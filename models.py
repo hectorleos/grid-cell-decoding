@@ -65,6 +65,19 @@ class ParentNNClass():
         num_bracket = (a - (s_i * (p_ij / (2 * np.pi)))) / s_i
         return self.r_max * (1 + np.cos(num_bracket * 2 * np.pi)) / 2
 
+    # --- Grid cell expected firing rate for 1D ---
+    def _gc_rate_vonMises(self, a, lambda_j,  c_j, kappa=1):
+        ''' FROM NESTED MODEL
+            Calculates GC firing rate based on von Mises function for 1D case.
+            a=current position
+            c_j=spatial phase
+            lambda_j=spatial period
+            kappa=relative tuning width
+           '''
+      #  print('WE SHOULD NOT BE USING THIS FUNCTION ANYMORE, USE _gc_rate FROM PARENT CLASS INSTEAD')
+        return self.r_max * np.exp(kappa * (np.cos(2 * np.pi * (a - c_j) / lambda_j) - 1))
+
+
     def _emax_N_normalize(self, x, epsilon=0.01):
         ''' Applies E%-max algorithm and normalzation steps '''
         # E%-max algorithm: silence all values below (1-epsilon) of the maximum value
@@ -159,11 +172,11 @@ class DistanceCellModel(ParentNNClass):
     def _compute_weight_matrix(self):
         ''' For each distance cell a, compute rate of cell j at scale i (i.e., r_ij) '''
         all_weights = []
-        for curr_distance in self.xdc_positions:
+        for curr_pos in self.xdc_positions:
             distance_weights = []
             for s_i in self.scales:
                 for p_ij in self.phases:
-                    r_ij = self._gc_rate(curr_distance, s_i, p_ij)
+                    r_ij = self._gc_rate(curr_pos, s_i, p_ij)
                     distance_weights.append(r_ij)
             all_weights.append(distance_weights)
         return np.array(all_weights)
@@ -190,6 +203,8 @@ class DistanceCellModel(ParentNNClass):
                     sampled_b = self._localdist_sample_b()  # In this case, we sample b according to self.b
                     curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
 
+
+              #  p_i = s_i * (p_i / (2 * np.pi))  # convert radian phase to cm offset
                 r_ix = self._gc_rate(curr_pos[0], s_i, p_i) # FR at x-axis
                 r_iy = self._gc_rate(curr_pos[1], s_i, p_i) # FR at y-axis
                 spikes_ix = np.random.poisson(lam = self.poiss_time_w * r_ix)
@@ -324,6 +339,8 @@ class VectorCellModel(ParentNNClass):
                 
                 # Compute mean firing rates for each of the m GCs at start and goal, on each axis
                 # Using index k directly as phase proxy (equivalent to Eq S6)
+              #  p = s_i * (p / (2 * np.pi))  # convert radian phase to cm offset
+
                 start_rates.append(self._gc_rate(start_pos[dim], s_i, p) * self.poiss_time_w)
                 goal_rates.append(self._gc_rate(targ_pos[dim], s_i, p) * self.poiss_time_w)
             start_rates = np.array(start_rates)
@@ -398,15 +415,6 @@ class NestedModel(ParentNNClass):
         ''' Creates m equally spaced phases for each scale'''
         return [np.linspace(0, scale, self.m, endpoint=False) for scale in self.scales]
     
-    # --- Grid cell expected firing rate for 1D ---
-    def _gc_rate(self, a, lambda_j,  c_j, kappa=1):
-        ''' Calculates GC firing rate based on von Mises function for 1D case.
-            a=current position
-            c_j=spatial phase
-            lambda_j=spatial period
-            kappa=relative tuning width
-           '''
-        return self.r_max * np.exp(kappa * (np.cos(2 * np.pi * (a - c_j) / lambda_j) - 1))
 
     # --- Grid cell spiking function ---
     def _gc_spikes(self, curr_pos, goal_drift = False):
@@ -432,8 +440,12 @@ class NestedModel(ParentNNClass):
                 if self.distortion_type == 'local': # Apply different distortion to each cell
                     sampled_b = self._localdist_sample_b()
                     curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
-                r_jx = self._gc_rate(curr_pos[0], lambda_i, c_j) # FR at x-axis
-                r_jy = self._gc_rate(curr_pos[1], lambda_i, c_j) # FR at y-axis
+                p_ij = (c_j / lambda_i) * (2 * np.pi)  # convert cm phase to radians
+                r_jx = self._gc_rate(curr_pos[0], lambda_i, p_ij) # FR at x-axis
+                r_jy = self._gc_rate(curr_pos[1], lambda_i, p_ij) # FR at y-axis
+
+              #  r_jx = self._gc_rate(curr_pos[0], lambda_i, c_j) # FR at x-axis
+              #  r_jy = self._gc_rate(curr_pos[1], lambda_i, c_j) # FR at y-axis
                 spikes_jx = np.random.poisson(lam = self.poiss_time_w * r_jx)
                 spikes_jy = np.random.poisson(lam = self.poiss_time_w * r_jy)
                 x_scale_gc_spikes.append(spikes_jx)

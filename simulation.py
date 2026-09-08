@@ -8,8 +8,6 @@ import os
 from utils import *
 from utils import real_to_grid_projection
 from tqdm import tqdm
-
-
 from models import DistanceCellModel, VectorCellModel, NestedModel
 
 # Utility functions for simulation
@@ -52,10 +50,18 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
             # Compute the population vector based on the current position and the goal
             grid_start_x, grid_start_y = real_to_grid_projection([real_start_x, real_start_y]) if hexagonal_projection else (real_start_x, real_start_y)
             curr_pop_vec = model.forward(start_pos=[grid_start_x, grid_start_y], targ_pos=[goal_x, goal_y])
+          #  real_curr_pop_vec = grid_to_real_projection(curr_pop_vec) if hexagonal_projection else curr_pop_vec
 
-            # Apply corresponding transformations
-            start_proj_diff = np.array([real_start_x, real_start_y]) - np.array([grid_start_x, grid_start_y])
-            curr_pop_vec -= start_proj_diff if hexagonal_projection else 0
+            # Apply corrections to the population vector if hexagonal projection is used
+            real_start = np.array([real_start_x, real_start_y])
+            grid_start = np.array([grid_start_x, grid_start_y])
+            start_proj_diff = real_start - grid_start
+            if False:
+                grid_goal_est = curr_pop_vec + grid_start
+                real_goal_est = grid_to_real_projection(grid_goal_est).T
+                real_grid_goal_diff = real_goal_est - grid_goal_est
+            curr_pop_vec = curr_pop_vec - start_proj_diff if hexagonal_projection else 0 #  + real_grid_goal_diff
+            # Normalize
             curr_pop_vec /= np.linalg.norm(curr_pop_vec) + 1e-10 
             
           # print(step_count, 'Starting position:', (real_start_x, real_start_y), 'Grid position:', (grid_start_x, grid_start_y), 'Goal position:', (goal_x, goal_y))

@@ -12,7 +12,7 @@ from simulation import run_load_simulation
 OUTPUT_DIR = 'simulation_outputs'
 
 # ================= MODEL & SIMULATION PARAMETERS =================
-N_SIM_ROUND = 8
+N_SIM_ROUND = 9
 N_TRIALS = 100
 ARENA_WIDTH = 100
 STEP_SIZE = 1
@@ -50,7 +50,7 @@ stretch_simulations = [stretch_global_params, stretch_modular_params, stretch_lo
 shear_simulations = [shear_global_params, shear_modular_params, shear_local_params, shear_drift_global_params]
 # =================================================================
 
-for curr_distortion_params in shear_simulations:
+for curr_distortion_params in stretch_simulations:
     for distortion_name in curr_distortion_params.keys():
         print(F'\n {"-+" * 30} RUNNING SIMULATIONS FOR DISTORTION={distortion_name} {"-+" * 30}')
         for model_name in model_names:
