@@ -1,0 +1,193 @@
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-1 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-2 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-3 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-4 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Saved figure to simulation_outputs/round-10/figures/trajectories_stretch-global_ntrials-100.png
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-1 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-2 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-3 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-4 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+Saved figure to simulation_outputs/round-10/figures/trajectories_stretch-modular_ntrials-100.png
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-1 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=stretch-local (a=1, b=1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/nm_trials-100_stretch-local_a-1_b-1.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=stretch-local (a=1, b=1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/dcm_trials-100_stretch-local_a-1_b-1.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/vcm_trials-100_stretch-local_a-1_b-1.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-2 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=stretch-local (a=1, b=0.99)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/nm_trials-100_stretch-local_a-1_b-0.99.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=stretch-local (a=1, b=0.99)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/dcm_trials-100_stretch-local_a-1_b-0.99.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.99)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/vcm_trials-100_stretch-local_a-1_b-0.99.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-3 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=stretch-local (a=1, b=0.95)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/nm_trials-100_stretch-local_a-1_b-0.95.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=stretch-local (a=1, b=0.95)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/dcm_trials-100_stretch-local_a-1_b-0.95.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.95)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/vcm_trials-100_stretch-local_a-1_b-0.95.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-4 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=stretch-local (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/nm_trials-100_stretch-local_a-1_b-0.9.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=stretch-local (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/dcm_trials-100_stretch-local_a-1_b-0.9.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/vcm_trials-100_stretch-local_a-1_b-0.9.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/nm_trials-100_stretch-local_a-1_b-0.7.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Distance Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_dc=12500 (DCM)
+	xdc_positions=[[-250.   -249.96 -249.92],...,[249.88 249.92 249.96]] (DCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/dcm_trials-100_stretch-local_a-1_b-0.7.pkl
+====================================================================== 
+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-10/local/vcm_trials-100_stretch-local_a-1_b-0.7.pkl
+====================================================================== 
+
+Saved figure to simulation_outputs/round-10/figures/trajectories_stretch-local_ntrials-100.png

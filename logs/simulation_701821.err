@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "/home/leosmendoza/Documents/MastersThesis/simulation_script.py", line 1, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+srun: error: compute4: task 0: Exited with exit code 1

@@ -13,7 +13,7 @@ from models import DistanceCellModel, VectorCellModel, NestedModel
 # Utility functions for simulation
 
 
-def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, convergence_threshold = 2.5, conv_n_prev = 5, hexagonal_projection= False, verbose=False, open_field=True):
+def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, convergence_threshold = 2.5, conv_n_prev = 5, verbose=False, open_field=True):
     # Get evenly spaced start positions in real space
     border_offset = 0.05 * arena_width
     square_half_width = (arena_width / 2)
@@ -21,63 +21,49 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
     xs = np.linspace(-offset_square_half_width, offset_square_half_width, int(np.sqrt(n_trials)))
     ys = np.linspace(-offset_square_half_width, offset_square_half_width, int(np.sqrt(n_trials)))
     XS, YS = np.meshgrid(xs, ys)
-    real_start_locs = np.array([XS.ravel(), YS.ravel()]).T.reshape(-1, 2) # Shape (n_trials, 2)
+    start_locs = np.array([XS.ravel(), YS.ravel()]).T.reshape(-1, 2) # Shape (n_trials, 2)
     print('OPEN FIELD:', open_field)
     # Get start positions in grid space
-    if hexagonal_projection:
-        grid_start_locs = real_to_grid_projection(np.array([XS.ravel(), YS.ravel()]) , l1=1, l2=2).T  # Shape (n_trials, 2)
-    
+
     # For each trial...
     x_histories = []
     y_histories = []
     for i in tqdm(range(n_trials), desc="Simulating trials"):
 
         # 1) Get start and goal positions 
-        real_start_x, real_start_y = real_start_locs[i]
-        grid_start_x, grid_start_y = grid_start_locs[i] if hexagonal_projection else (real_start_x, real_start_y)
+        start_x, start_y = start_locs[i]
         goal_x, goal_y = [0, 0] # Goal is the same in real and grid space
 
       # print('-----Starting position:', (real_start_x, real_start_y), 'Grid position:', (grid_start_x, grid_start_y), 'Goal position:', (goal_x, goal_y))
 
         # 2) Conduct navigation simulation until convergence
-        x_history = [real_start_x]
-        y_history = [real_start_y]
+        x_history = [start_x]
+        y_history = [start_y]
         converged = False
         step_count = 0
         model.b_offset = 0
         while not converged:
 
             # Compute the population vector based on the current position and the goal
-            grid_start_x, grid_start_y = real_to_grid_projection([real_start_x, real_start_y]) if hexagonal_projection else (real_start_x, real_start_y)
-            curr_pop_vec = model.forward(start_pos=[grid_start_x, grid_start_y], targ_pos=[goal_x, goal_y])
-          #  real_curr_pop_vec = grid_to_real_projection(curr_pop_vec) if hexagonal_projection else curr_pop_vec
-
-            # Apply corrections to the population vector if hexagonal projection is used
-            real_start = np.array([real_start_x, real_start_y])
-            grid_start = np.array([grid_start_x, grid_start_y])
-            start_proj_diff = real_start - grid_start
-            if False:
-                grid_goal_est = curr_pop_vec + grid_start
-                real_goal_est = grid_to_real_projection(grid_goal_est).T
-                real_grid_goal_diff = real_goal_est - grid_goal_est
-            curr_pop_vec = curr_pop_vec - start_proj_diff if hexagonal_projection else 0 #  + real_grid_goal_diff
+            curr_pop_vec_grid = model.forward(start_pos=[start_x, start_y], targ_pos=[goal_x, goal_y])
+            curr_pop_vec_real = grid_to_real_projection(curr_pop_vec_grid)
             # Normalize
-            curr_pop_vec /= np.linalg.norm(curr_pop_vec) + 1e-10 
+            curr_pop_vec_real /= np.linalg.norm(curr_pop_vec_real) + 1e-10 
             
           # print(step_count, 'Starting position:', (real_start_x, real_start_y), 'Grid position:', (grid_start_x, grid_start_y), 'Goal position:', (goal_x, goal_y))
 
             # Update position based on the population vector
-            real_start_x = x_history[-1] + (curr_pop_vec[0] * step_size)
-            real_start_y = y_history[-1] + (curr_pop_vec[1] * step_size)
+            start_x = x_history[-1] + (curr_pop_vec_real[0] * step_size)
+            start_y = y_history[-1] + (curr_pop_vec_real[1] * step_size)
 
             if not open_field:
                 # Check if we have exited the arena
-                x_exit = not (-square_half_width <= real_start_x <= square_half_width)
-                y_exit = not (-square_half_width <= real_start_y <= square_half_width)
+                x_exit = not (-square_half_width <= start_x <= square_half_width)
+                y_exit = not (-square_half_width <= start_y <= square_half_width)
 
                 # Cancel position update if we have exited the arena
-                real_start_x = x_history[-1] if x_exit else real_start_x
-                real_start_y = y_history[-1] if y_exit else real_start_y
+                start_x = x_history[-1] if x_exit else start_x
+                start_y = y_history[-1] if y_exit else start_y
 
           #  print(f'x_exit: {x_exit}, y_exit: {y_exit}, start_x: {start_x:.3f}, start_y: {start_y:.3f}')
 
@@ -87,18 +73,18 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
          
          #   print('model.b_offset:',model.b_offset)
             if verbose:
-                print(f"Step {step_count}: Position ({real_start_x:.3f}, {real_start_y:.3f})")
-            x_history.append(real_start_x)
-            y_history.append(real_start_y)
+                print(f"Step {step_count}: Position ({start_x:.3f}, {start_y:.3f})")
+            x_history.append(start_x)
+            y_history.append(start_y)
 
             # Update distorted cells (returns same coords if distortion is None)
            # gc_start_x, gc_start_y = gc_distortion(x_history[-1], y_history[-1], distortion_params=distortion_params)
 
             # Convergence happened if the distance moved in the last conv_n_prev steps is less than the convergence threshold
             if step_count > conv_n_prev:
-                real_old_x = x_history[-conv_n_prev]
-                real_old_y = y_history[-conv_n_prev]
-                distance_moved = np.sqrt((real_start_x - real_old_x) ** 2 + (real_start_y - real_old_y) ** 2)
+                old_x = x_history[-conv_n_prev]
+                old_y = y_history[-conv_n_prev]
+                distance_moved = np.sqrt((start_x - old_x) ** 2 + (start_y - old_y) ** 2)
                 if distance_moved < convergence_threshold: # or step_count > 1000:
                     converged = True
             step_count += 1
@@ -107,7 +93,7 @@ def navigation_simulation(model, arena_width = 100, n_trials=5, step_size = 1, c
         
     return x_histories, y_histories
 
-def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, convergence_threshold = 2.5, distortion_params = None, hexagonal_projection=False, n_sim_round=1, save_data=True):
+def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, convergence_threshold = 2.5, distortion_params = None, n_sim_round=1, save_data=True, N_dc=None, N_fvc=None):
 
     # Directories
     output_dir = Path('simulation_outputs', f'round-{n_sim_round}')
@@ -118,16 +104,23 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
         distortion_text += f'_bdrift-{distortion_params["b_drift"]}'
     os.makedirs(Path(output_dir), exist_ok=True)
     os.makedirs(Path(output_dir) / Path(distortion_type), exist_ok=True)
-    simulation_data_file = Path(output_dir) / Path(distortion_type) / f'{model_name}_trials-{n_trials}{distortion_text}.pkl'
+    extra_param_str = f'_Ndc-{N_dc}_Nfvc-{N_fvc}' if (N_dc is not None) or (N_fvc is not None) else ''
+    simulation_data_file = Path(output_dir) / Path(distortion_type) / f'{model_name}_trials-{n_trials}{distortion_text}{extra_param_str}.pkl'
 
     # If  new simulation and save results
     if not os.path.exists(simulation_data_file):
 
         #Initialize corresponding model
         if model_name == 'dcm':
-            model = DistanceCellModel(distortion_params=distortion_params)
+            if N_dc is None:
+                model = DistanceCellModel(distortion_params=distortion_params) # N_dc will be set to default value in models.py class
+            else:
+                model = DistanceCellModel(distortion_params=distortion_params, N_dc=N_dc)
         elif model_name == 'vcm':
-            model = VectorCellModel(distortion_params=distortion_params, arena_width = arena_width)
+            if N_fvc is None:
+                model = VectorCellModel(distortion_params=distortion_params, arena_width = arena_width)  # N_fvc will be set to default value in models.py class
+            else:
+                model = VectorCellModel(distortion_params=distortion_params, arena_width = arena_width, N_fvc=N_fvc, N_cvc = N_fvc / 10)
         elif model_name == 'nm':
             model = NestedModel(distortion_params=distortion_params)
         else:
@@ -145,15 +138,12 @@ def run_load_simulation(model_name, arena_width, n_trials=400, step_size=0.1, co
             print(f'\tcvc_pos=[{model.cvc_pos[:3]},...,{model.cvc_pos[-3:]}] (VCM)')
             print(f'\tfvc_pos=[{model.fvc_pos[:3]},...,{model.fvc_pos[-3:]}] (VCM)')
         print(f'\tScales={model.scales}')
-        print(f'\thexagonal_projection: {hexagonal_projection}')
-
 
         x_histories, y_histories = navigation_simulation(model, 
                                                          arena_width=arena_width, 
                                                          n_trials=n_trials,
                                                          step_size=step_size,
                                                          convergence_threshold=convergence_threshold,
-                                                         hexagonal_projection=hexagonal_projection,
                                                          verbose=False)
 
         if save_data:
@@ -177,8 +167,10 @@ if __name__ == '__main__':
     parser.add_argument('--distortion', type=str, default=None, help='Type of distortion (stretch, shear, symmetric)')
     parser.add_argument('--a', type=float, default=None, help='Parameter a for distortion')
     parser.add_argument('--b', type=float, default=None, help='Parameter b for distortion')
+    parser.add_argument('--N_dc', type=int, default=None, help='Number of distance cells')
+    parser.add_argument('--N_fvc', type=int, default=None, help='Number of field vector cells')
     args = parser.parse_args()
 
     run_load_simulation(args.model_name, args.arena_width, args.n_trials, args.step_size,
-                        args.distortion, args.a, args.b)
+                        args.distortion, args.a, args.b, N_dc=args.N_dc, N_fvc=args.N_fvc)
     

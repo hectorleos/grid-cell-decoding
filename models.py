@@ -1,6 +1,7 @@
 import numpy as np
 from math import pow
 import matplotlib.pyplot as plt
+from utils import real_to_grid_projection
 plt.style.use('bmh')
 
 # Global parameters across models
@@ -74,7 +75,7 @@ class ParentNNClass():
             lambda_j=spatial period
             kappa=relative tuning width
            '''
-      #  print('WE SHOULD NOT BE USING THIS FUNCTION ANYMORE, USE _gc_rate FROM PARENT CLASS INSTEAD')
+        print('WE SHOULD NOT BE USING THIS FUNCTION ANYMORE, USE _gc_rate FROM PARENT CLASS INSTEAD')
         return self.r_max * np.exp(kappa * (np.cos(2 * np.pi * (a - c_j) / lambda_j) - 1))
 
 
@@ -118,7 +119,10 @@ class ParentNNClass():
 
 
     def _apply_distortion(self, X, Y, a, b, goal_drift=False):
-        ''' Applies parametric distortions following Edvarsen (2018)'''
+        ''' Applies parametric distortions following Edvarsen (2018)
+        Note that goal_drift is only used to differentiate between start and goal positions. 
+        Drift will ONLY be applied when self.b_drift is not None 
+        '''
         if self.distortion_name == 'stretch':
             dist_mat = np.array([[a, 0], [0, b]])
             inv_dist_mat = np.linalg.inv(dist_mat)
@@ -205,8 +209,9 @@ class DistanceCellModel(ParentNNClass):
 
 
               #  p_i = s_i * (p_i / (2 * np.pi))  # convert radian phase to cm offset
-                r_ix = self._gc_rate(curr_pos[0], s_i, p_i) # FR at x-axis
-                r_iy = self._gc_rate(curr_pos[1], s_i, p_i) # FR at y-axis
+                curr_pos_grid = real_to_grid_projection(curr_pos)
+                r_ix = self._gc_rate(curr_pos_grid[0], s_i, p_i) # FR at x-axis
+                r_iy = self._gc_rate(curr_pos_grid[1], s_i, p_i) # FR at y-axis
                 spikes_ix = np.random.poisson(lam = self.poiss_time_w * r_ix)
                 spikes_iy = np.random.poisson(lam = self.poiss_time_w * r_iy)
                 #print(f"GC at phase {p_ij} with rate {np.round(r_ij)}: spikes: {spikes_ij}")
@@ -246,14 +251,14 @@ class DistanceCellModel(ParentNNClass):
   
 class VectorCellModel(ParentNNClass):
 
-    def __init__(self, N_fvc = N_FVC, N_cvc = N_FVC/10, **kwargs):
+    def __init__(self, N_fvc = N_FVC, N_cvc = N_FVC/10, N_dc=None, **kwargs):
         # Original params N_fvc = 12500, N_cvc = 1250
         super().__init__(**kwargs)  
         self.name = 'vcm'
         self.long_name = 'Vector Cell Model'
         self.N_fvc = N_fvc    # Number of "fine-grained" vector cells per array (x or y, pos or neg)
         self.N_cvc = N_cvc    # Number of "course-grained" vector cells per array (x or y, pos or neg)
-        self.max_range = N_DC * DC_RES  # Maximum range of VCM for fair comparison
+        self.max_range = N_DC * DC_RES if N_dc is None else N_dc * DC_RES  # Maximum range of VCM for fair comparison
 
         # Initialize networks parameters
         self.scales = self._create_scales()
@@ -340,9 +345,10 @@ class VectorCellModel(ParentNNClass):
                 # Compute mean firing rates for each of the m GCs at start and goal, on each axis
                 # Using index k directly as phase proxy (equivalent to Eq S6)
               #  p = s_i * (p / (2 * np.pi))  # convert radian phase to cm offset
-
-                start_rates.append(self._gc_rate(start_pos[dim], s_i, p) * self.poiss_time_w)
-                goal_rates.append(self._gc_rate(targ_pos[dim], s_i, p) * self.poiss_time_w)
+                start_pos_grid = real_to_grid_projection(start_pos)
+                targ_pos_grid = real_to_grid_projection(targ_pos)
+                start_rates.append(self._gc_rate(start_pos_grid[dim], s_i, p) * self.poiss_time_w)
+                goal_rates.append(self._gc_rate(targ_pos_grid[dim], s_i, p) * self.poiss_time_w)
             start_rates = np.array(start_rates)
             goal_rates = np.array(goal_rates)
 
@@ -357,8 +363,6 @@ class VectorCellModel(ParentNNClass):
 
         return multsyn_pos, multsyn_neg
     
-
-
     
     def forward(self, start_pos, targ_pos):
         ''' Given current 2D position a and target position b, apply forward pass by 
@@ -440,9 +444,10 @@ class NestedModel(ParentNNClass):
                 if self.distortion_type == 'local': # Apply different distortion to each cell
                     sampled_b = self._localdist_sample_b()
                     curr_pos = self._apply_distortion(curr_pos[0], curr_pos[1], self.a, sampled_b)
+                curr_pos_grid = real_to_grid_projection(curr_pos)
                 p_ij = (c_j / lambda_i) * (2 * np.pi)  # convert cm phase to radians
-                r_jx = self._gc_rate(curr_pos[0], lambda_i, p_ij) # FR at x-axis
-                r_jy = self._gc_rate(curr_pos[1], lambda_i, p_ij) # FR at y-axis
+                r_jx = self._gc_rate(curr_pos_grid[0], lambda_i, p_ij) # FR at x-axis
+                r_jy = self._gc_rate(curr_pos_grid[1], lambda_i, p_ij) # FR at y-axis
 
               #  r_jx = self._gc_rate(curr_pos[0], lambda_i, c_j) # FR at x-axis
               #  r_jy = self._gc_rate(curr_pos[1], lambda_i, c_j) # FR at y-axis
