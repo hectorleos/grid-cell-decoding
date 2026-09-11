@@ -1,24 +1,24 @@
 import numpy as np
-from math import pow
-import matplotlib.pyplot as plt
 from utils import real_to_grid_projection
-plt.style.use('bmh')
 
 # Global parameters across models
-N_MODULES = 10        # Number of GC modules (M)
-N_GC_PER_MODULE = 20    # Number of GCs per module (m)
-SCALE_RATIO = 1.5       # Scale ratio 
-MIN_SCALE = 25        # Minimum grid scale (for geometric progression)
-R_MAX = 30              # Maximum GC firing rate (r_max)
-TIME_W = 0.1            # Time window in Poisson process (secs)
-N_DC = 12500    # Number of distance cells
-DC_RES = 0.04    # Spatial resolution of distance cells (cm)
-N_FVC = 12500    # Number of "fine-grained" vector cells per array (x or y, pos or neg)
+import params
+N_MODULES = params.N_MODULES                # Number of GC modules (M)
+N_GC_PER_MODULE = params.N_GC_PER_MODULE    # Number of GCs per module (m)
+SCALE_RATIO = params.SCALE_RATIO            # Scale ratio 
+MIN_SCALE = params.MIN_SCALE                # Minimum grid scale (for geometric progression)
+R_MAX = params.R_MAX                        # Maximum GC firing rate (r_max)
+TIME_W = params.TIME_W                      # Time window in Poisson process (secs)
+N_DC = params.N_DC                          # Number of distance cells
+DC_RES = params.DC_RES                      # Spatial resolution of distance cells (cm)
+N_FVC = params.N_FVC                        # Number of "fine-grained" vector cells per array (x or y, pos or neg)
+E_MAX_EPS = params.E_MAX_EPS                # E%-max algorithm parameter
+MODULAR_BS_SELEC = params.MODULAR_BS_SELEC   # Determines how beta values are selected in modular distortions
 
 class ParentNNClass():
 
     def __init__(self, M = N_MODULES, min_scale = MIN_SCALE, scale_ratio = SCALE_RATIO, m = N_GC_PER_MODULE, 
-                 r_max = R_MAX, time_w = TIME_W, arena_width=None, distortion_params=None):
+                 r_max = R_MAX, time_w = TIME_W, arena_width=None, modular_bs_selec=MODULAR_BS_SELEC, distortion_params=None):
         # Grid cell parameters
         self.M = M                      # Number of GC modules
         self.s_M = min_scale            # Minimum grid scale (for geometric progression)
@@ -27,6 +27,7 @@ class ParentNNClass():
         self.r_max = r_max  # Maximum GC firing rate (Hz)
         self.poiss_time_w = time_w # Time window in Poisson process (secs)
         self.arena_width = arena_width    # Maximum arena width (cm)
+        self.modular_bs_selec = modular_bs_selec # How beta values are selected for modular distortions (options: 'GP' for geometric progression or 'RS' for random sampling)
 
         # Distortion parameters
         if distortion_params is not None:
@@ -79,7 +80,7 @@ class ParentNNClass():
         return self.r_max * np.exp(kappa * (np.cos(2 * np.pi * (a - c_j) / lambda_j) - 1))
 
 
-    def _emax_N_normalize(self, x, epsilon=0.01):
+    def _emax_N_normalize(self, x, epsilon=E_MAX_EPS):
         ''' Applies E%-max algorithm and normalzation steps '''
         # E%-max algorithm: silence all values below (1-epsilon) of the maximum value
         threshold = x.max() * (1 - epsilon)
@@ -99,19 +100,32 @@ class ParentNNClass():
         elif self.distortion_name == 'stretch':
             return np.random.uniform(self.b, 1)
 
-    def _modulardist_get_bs(self):
-        ''' Obtaines M values for b following geometric progression (modular distortion) '''
+    def _modulardist_get_bs(self, bs_selection_type=MODULAR_BS_SELEC):
+        ''' Obtaines M values for b following geometric progression (modular distortion) or by random sampling '''
         modular_bs = []
-        if self.distortion_name == 'shear':
+        if bs_selection_type == 'GP': # geometric progression 
+            if self.distortion_name == 'shear':
+                for i in np.arange(self.M, 0, -1):
+                    modular_bs.append(round(self.b / (self.scale_ratio ** (self.M-i)),2))
+                modular_bs = np.array(modular_bs)[::-1]
+            elif self.distortion_name == 'stretch':
+                for i in np.arange(self.M, 0, -1):
+                    modular_bs.append(1 - round(self.b / (self.scale_ratio ** (self.M-i)),2))
+                modular_bs = np.array(modular_bs)[::-1]
+            else:
+                print(f"_modulardist_get_bs: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
+                exit(1)
+        elif bs_selection_type == 'RS': # random sampling
             for i in np.arange(self.M, 0, -1):
-                modular_bs.append(round(self.b / (self.scale_ratio ** (self.M-i)),2))
-            modular_bs = np.array(modular_bs)[::-1]
-        elif self.distortion_name == 'stretch':
-            for i in np.arange(self.M, 0, -1):
-                modular_bs.append(1 - round(self.b / (self.scale_ratio ** (self.M-i)),2))
-            modular_bs = np.array(modular_bs)[::-1]
+                if self.distortion_name == 'shear':
+                    modular_bs.append(np.random.uniform(0, self.b))
+                elif self.distortion_name == 'stretch':
+                    modular_bs.append(np.random.uniform(self.b, 1))
+                else:
+                    print(f"_modulardist_get_bs: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
+                    exit(1)
         else:
-            print(f"_modulardist_get_bs: Distortion type '{self.distortion_name}' is not recognized. No distortion applied.")
+            print(f"_modulardist_get_bs: bs_selection_type '{bs_selection_type}' is not recognized. No distortion applied.")
             exit(1)
         # IMPORTANT: modules in nested modules are reversed, so this array must also be reversed in that case
         modular_bs = modular_bs[::-1] if self.name == 'nm' else modular_bs
@@ -258,7 +272,7 @@ class VectorCellModel(ParentNNClass):
         self.long_name = 'Vector Cell Model'
         self.N_fvc = N_fvc    # Number of "fine-grained" vector cells per array (x or y, pos or neg)
         self.N_cvc = N_cvc    # Number of "course-grained" vector cells per array (x or y, pos or neg)
-        self.max_range = N_DC * DC_RES if N_dc is None else N_dc * DC_RES  # Maximum range of VCM for fair comparison
+        self.max_range = (N_DC * DC_RES)/2 if N_dc is None else N_dc * DC_RES  # Maximum range of VCM for fair comparison
 
         # Initialize networks parameters
         self.scales = self._create_scales()
@@ -343,8 +357,6 @@ class VectorCellModel(ParentNNClass):
                     targ_pos = self._apply_distortion(targ_pos[0], targ_pos[1], self.a, sampled_b)
                 
                 # Compute mean firing rates for each of the m GCs at start and goal, on each axis
-                # Using index k directly as phase proxy (equivalent to Eq S6)
-              #  p = s_i * (p / (2 * np.pi))  # convert radian phase to cm offset
                 start_pos_grid = real_to_grid_projection(start_pos)
                 targ_pos_grid = real_to_grid_projection(targ_pos)
                 start_rates.append(self._gc_rate(start_pos_grid[dim], s_i, p) * self.poiss_time_w)
@@ -449,8 +461,9 @@ class NestedModel(ParentNNClass):
                 r_jx = self._gc_rate(curr_pos_grid[0], lambda_i, p_ij) # FR at x-axis
                 r_jy = self._gc_rate(curr_pos_grid[1], lambda_i, p_ij) # FR at y-axis
 
-              #  r_jx = self._gc_rate(curr_pos[0], lambda_i, c_j) # FR at x-axis
-              #  r_jy = self._gc_rate(curr_pos[1], lambda_i, c_j) # FR at y-axis
+                # Using cosine tuned rate function instead of von Mises for comparison with DCM and VCM
+                # r_jx = self._gc_rate_vonMises(curr_pos[0], lambda_i, c_j) # FR at x-axis
+                # r_jy = self._gc_rate_vonMises(curr_pos[1], lambda_i, c_j) # FR at y-axis
                 spikes_jx = np.random.poisson(lam = self.poiss_time_w * r_jx)
                 spikes_jy = np.random.poisson(lam = self.poiss_time_w * r_jy)
                 x_scale_gc_spikes.append(spikes_jx)

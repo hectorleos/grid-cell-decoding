@@ -7,5 +7,5 @@
 #SBATCH --mem=10G
 #SBATCH --cpus-per-task=1
   
-srun python simulation_script.py
+srun python simulation_script.py --n_sim_round 13 --save_data
  

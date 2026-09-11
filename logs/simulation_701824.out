@@ -9,3 +9,580 @@ PARAMETERS:
 	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
 	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
 OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_stretch-global_a-1_b-0.1_Ndc-12500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-global (a=1, b=0.1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_stretch-global_a-1_b-0.1_Ndc-15000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-global (a=1, b=0.1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_stretch-global_a-1_b-0.1_Ndc-17500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-global (a=1, b=0.1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_stretch-global_a-1_b-0.1_Ndc-20000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-global (a=1, b=0.1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_stretch-global_a-1_b-0.1_Ndc-22500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-global (a=1, b=0.1)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_stretch-global_a-1_b-0.1_Ndc-25000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-modular (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_stretch-modular_a-1_b-0.9_Ndc-12500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-modular (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_stretch-modular_a-1_b-0.9_Ndc-15000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-modular (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_stretch-modular_a-1_b-0.9_Ndc-17500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-modular (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_stretch-modular_a-1_b-0.9_Ndc-20000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-modular (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_stretch-modular_a-1_b-0.9_Ndc-22500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-modular (a=1, b=0.9)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_stretch-modular_a-1_b-0.9_Ndc-25000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_stretch-local_a-1_b-0.7_Ndc-12500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_stretch-local_a-1_b-0.7_Ndc-15000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_stretch-local_a-1_b-0.7_Ndc-17500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_stretch-local_a-1_b-0.7_Ndc-20000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_stretch-local_a-1_b-0.7_Ndc-22500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=stretch-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=stretch-local (a=1, b=0.7)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_stretch-local_a-1_b-0.7_Ndc-25000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear-global_a-0_b-10_Ndc-12500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear-global_a-0_b-10_Ndc-15000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear-global_a-0_b-10_Ndc-17500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear-global_a-0_b-10_Ndc-20000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear-global_a-0_b-10_Ndc-22500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-global (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear-global_a-0_b-10_Ndc-25000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-modular (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_shear-modular_a-0_b-10_Ndc-12500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-modular (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_shear-modular_a-0_b-10_Ndc-15000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-modular (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_shear-modular_a-0_b-10_Ndc-17500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-modular (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_shear-modular_a-0_b-10_Ndc-20000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-modular (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_shear-modular_a-0_b-10_Ndc-22500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-modular-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-modular (a=0, b=10)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/modular/vcm_trials-100_shear-modular_a-0_b-10_Ndc-25000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-local (a=0, b=0.5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_shear-local_a-0_b-0.5_Ndc-12500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-local (a=0, b=0.5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_shear-local_a-0_b-0.5_Ndc-15000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-local (a=0, b=0.5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_shear-local_a-0_b-0.5_Ndc-17500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-local (a=0, b=0.5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_shear-local_a-0_b-0.5_Ndc-20000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-local (a=0, b=0.5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_shear-local_a-0_b-0.5_Ndc-22500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-local-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear-local (a=0, b=0.5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/local/vcm_trials-100_shear-local_a-0_b-0.5_Ndc-25000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear+drift-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear+drift-global (a=0, b=5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear+drift-global_a-0_b-5_bdrift-0.1_Ndc-12500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear+drift-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear+drift-global (a=0, b=5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear+drift-global_a-0_b-5_bdrift-0.1_Ndc-15000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear+drift-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear+drift-global (a=0, b=5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear+drift-global_a-0_b-5_bdrift-0.1_Ndc-17500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear+drift-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear+drift-global (a=0, b=5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear+drift-global_a-0_b-5_bdrift-0.1_Ndc-20000_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear+drift-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear+drift-global (a=0, b=5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear+drift-global_a-0_b-5_bdrift-0.1_Ndc-22500_Nfvc-None.pkl
+====================================================================== 
+
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear+drift-global-5 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Vector Cell Model*** with distortion=shear+drift-global (a=0, b=5)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1
+	N_fvc=12500 (VCM)
+	cvc_pos=[[0.         0.04411894 0.07934294],...,[497.29175374 498.64587687 500.        ]] (VCM)
+	fvc_pos=[[0.        0.0400032 0.0800064],...,[499.9199936 499.9599968 500.       ]] (VCM)
+	Scales=[25.0, 37.5, 56.25, 84.38, 126.56, 189.84, 284.77, 427.15, 640.72, 961.08]
+OPEN FIELD: True
+Saved simulation data to simulation_outputs/round-11/global/vcm_trials-100_shear+drift-global_a-0_b-5_bdrift-0.1_Ndc-25000_Nfvc-None.pkl
+====================================================================== 
+

@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "simulation_script.py", line 106, in <module>
+    run_simulation_series(n_sim_round=args.n_sim_round, 
+  File "simulation_script.py", line 42, in run_simulation_series
+    sim_output = run_load_simulation(model_name, 
+  File "/home/leosmendoza/Documents/MastersThesis/simulations.py", line 132, in run_load_simulation
+    print(f'\tM={model.M}, min_scale={model.s_M}, scale_ratio={model.scale_ratio}, m={model.m}, r_max={model.r_max}, poiss_time_w={model.poiss_time_w}, modular_bs_selec={model.modular_bs_selec}')
+AttributeError: 'NestedModel' object has no attribute 'modular_bs_selec'
+srun: error: compute9: task 0: Exited with exit code 1

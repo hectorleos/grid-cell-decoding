@@ -1,0 +1,7 @@
+
+ -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+ RUNNING SIMULATIONS FOR DISTORTION=shear-modular-1 -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+======================================================================
+Running new simulation for ***Nested Model*** with distortion=shear-modular (a=0, b=0)...
+PARAMETERS:
+	M=10, min_scale=25, scale_ratio=1.5, m=20, r_max=30, poiss_time_w=0.1, modular_bs_selec=RS
+	Scales=[961.08, 640.72, 427.15, 284.77, 189.84, 126.56, 84.38, 56.25, 37.5, 25.0]
